@@ -132,7 +132,7 @@ class labelManager:
         # go label by label
         for row in manager.labels.collection.get_rows():
             # first check if it has a TodoistID
-            if row.todoistID is None:
+            if not row.todoistID:
                 # check if the name of the label matches one on todoist
                 if row.todoist_name in labels.values():
                     # add todoist label id to notion
@@ -160,6 +160,89 @@ class labelManager:
             # for notion_label in manager.tasks.collection.get_schema_property():
 
         print(f"Done syncing labels. {new_label_count} label(s) added and {updated_label_count} label(s) updated")
+
+
+class projectManager:
+
+    @staticmethod
+    def get_todoist_bidict(manager):
+        
+        project_bidict = bidict({})
+        for project in manager.api.projects.all():
+            project_bidict[project["id"]] = project["name"]
+
+        return project_bidict
+
+    @staticmethod
+    def get_notion_bidict(manager):
+
+        project_bidict = bidict({})
+        for project in manager.projects.collection.get_rows():
+            project_bidict[project.id] = project.title
+
+        return project_bidict
+
+    @staticmethod
+    def get_cross_bidict(manager):
+
+        cross_bidict = bidict({})
+        for project in manager.projects.collection.get_rows():
+            cross_bidict[project.todoistID] = project.id
+
+        return cross_bidict
+
+    @staticmethod
+    def get_all_bidicts(manager):
+
+        return projectManager.get_todoist_bidict(manager), \
+               projectManager.get_notion_bidict(manager), \
+               projectManager.get_cross_bidict(manager)
+
+    @staticmethod
+    def sync_projects(manager: taskManager):
+
+        print("Syncing projects...")
+        new_project_count = 0
+        updated_project_count = 0
+
+        # sync todoist api
+        manager.sync_todoist_api()
+
+        # get a list of labels
+        todoist_projects, notion_projects, cross_projects = projectManager.get_all_bidicts(manager)
+
+        # go label by label
+        for project in manager.projects.collection.get_rows():
+            # first check if it has a TodoistID
+            if not project.todoistID:
+                # check if the name of the project matches one on todoist
+                if project.title in todoist_projects.values():
+                    # add todoist project id to notion
+                    project.todoistID = todoist_projects.inverse[project.title]
+                else:  # otherwise, add it to todoist
+                    print(f"Adding new project {project.title}")
+                    manager.api.projects.add(name=project.title)
+                    manager.commit_todoist_api()
+
+                    # update label_bidict and add todoistID to notion
+                    todoist_projects = projectManager.get_todoist_bidict(manager)
+                    project.todoistID = todoist_projects.inverse[project.title]
+
+                    new_project_count += 1  # update label count
+            else:
+                # check if the project name is different, if so, update name in todoist
+                if project.title != todoist_projects[project.todoistID]:
+                    print(f"Updating project name {todoist_projects[project.todoistID]} ⮕ {project.title}")
+                    manager.api.projects.get_by_id(project.todoistID).update(name=project.title)
+                    manager.commit_todoist_api()
+
+                    updated_project_count += 1  # update updated label count
+
+            # add notion IDs to table
+            # for notion_label in manager.tasks.collection.get_schema_property():
+
+        print(f"Done syncing projects. {new_project_count} project(s) added "
+              f"and {updated_project_count} projects(s) updated")
 
 
 class taskImporter:
