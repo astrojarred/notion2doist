@@ -5,6 +5,7 @@ import notion
 from notion.client import NotionClient
 import json
 from bidict import bidict
+from datetime import datetime, timezone
 
 
 class task:
@@ -407,3 +408,10 @@ class taskManager:
         )
 
         return new_task
+
+
+class helper:
+
+    @staticmethod
+    def utc_to_local(utc_dt):
+        return utc_dt.replace(tzinfo=timezone.utc).astimezone(tz=None)
