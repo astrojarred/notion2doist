@@ -65,14 +65,18 @@ class task:
             super.__setattr__(self, name, value)
 
 
-class taskManager:
+class syncManager:
 
     def __init__(self, todoist_token, notion_token, notion_settings_url):
 
         self.api = TodoistAPI(todoist_token)
         self.client = NotionClient(token_v2=notion_token)
         self.settings = self.client.get_collection_view(notion_settings_url)
+
+        # extract and parse settings
         self.config = {row.title: row.value for row in self.settings.collection.get_rows()}  # extract settings
+        self._parse_label_columns()
+
         self.tasks = self.client.get_collection_view(
             "https://www.notion.so/" + self.config["Link to task database"]
             )
@@ -97,6 +101,15 @@ class taskManager:
     def commit_todoist_api(self):
         self.old_commit = self.new_commit
         self.new_commit = self.api.commit()
+
+    def _parse_label_columns(self):
+        column_list = self.config['Label column name']
+        column_dict = {}
+        for item in column_list.replace(" ", "").split(","):
+            key, value = item.split("=")
+            column_dict[key] = value
+        self.config["Input label string"] = self.config['Label column name']
+        self.config['Label column name'] = column_dict
 
 
 class labelManager:
