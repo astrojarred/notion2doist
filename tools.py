@@ -6,6 +6,7 @@ from notion.client import NotionClient
 import json
 from bidict import bidict
 
+
 class task:
 
     def __init__(self,
@@ -130,7 +131,7 @@ class labelManager:
         return label_bidict
 
     @staticmethod
-    def sync_labels_to_todoist(manager: taskManager):
+    def sync_labels_to_todoist(manager: syncManager):
 
         print("Syncing labels...")
         new_label_count = 0
@@ -212,7 +213,7 @@ class projectManager:
                projectManager.get_cross_bidict(manager)
 
     @staticmethod
-    def sync_projects(manager: taskManager):
+    def sync_projects(manager: syncManager):
 
         print("Syncing projects...")
         new_project_count = 0
@@ -258,7 +259,7 @@ class projectManager:
               f"and {updated_project_count} projects(s) updated")
 
 
-class taskImporter:
+class taskManager:
 
     @staticmethod
     def from_todoist(api, item):
@@ -298,7 +299,7 @@ class taskImporter:
 
         is_done = True if item.status == "Done 🙌" else False
         todoist_label_id, todoist_label = \
-            taskImporter.label_translator(output="todoist", notion_label=item.status)
+            taskManager.label_translator(output="todoist", notion_label=item.status)
 
         # add notion ID to the task table
         item.NotionID = item.id
@@ -326,13 +327,13 @@ class taskImporter:
         notion_table.refresh()
 
         if not isinstance(item, task):
-            raise TypeError("Input task must be of class `taskImporter.task`.")
+            raise TypeError("Input task must be of class `taskManager.task`.")
 
         if not isinstance(notion_table, notion.block.CollectionViewPageBlock):
             raise TypeError("Input table must be of `notion.block.CollectionViewPageBlock` type.")
 
         status = "Done 🙌" if item.done else \
-            taskImporter.label_translator(output="notion", todoist_id=item.label_ids[0])[1]
+            taskManager.label_translator(output="notion", todoist_id=item.label_ids[0])[1]
 
         project = project_table.collection.get_rows(search=str(item.project_id))[0]
 
