@@ -71,7 +71,6 @@ class task:
 class syncManager:
 
     def __init__(self, todoist_token, notion_token, notion_settings_url):
-
         self.api = TodoistAPI(todoist_token)
         self.client = NotionClient(token_v2=notion_token)
         self.settings = self.client.get_collection_view(notion_settings_url)
