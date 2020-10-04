@@ -120,10 +120,34 @@ class syncManager:
 class labelManager:
 
     @staticmethod
-    def label_translator(label, output="todoist"):
+    def translate_label(manager, label, source="todoist"):
 
-        if output == "todoist":
-            return label.replace(" ", "")
+        output = "notion" if source == "todoist" else "todoist"
+
+        for row in manager.labels.collection.get_rows():
+            if row.get_property(f"{source} label") == label:
+                return row.get_property(f"{output} label"), row.get_property(f"{output}ID")
+
+        return None
+
+    @staticmethod
+    def get_notion_labels(manager, row):
+        """Always returns todoist label names and IDs"""
+
+        label_config = manager.config['Label column name']
+        label_names, label_ids = [], []
+
+        for label_column in label_config.keys():
+            row_labels = row.get_property(label_column)
+            if not isinstance(row_labels, list):  # if column is single-select, convert it to a list
+                row_labels = [row_labels]
+            # add labels to list and translate to todoist labels
+            for label in row_labels:
+                todoist_label, todoist_id = labelManager.translate_label(manager, label, source="notion")
+                label_names.append(todoist_label)
+                label_ids.append(todoist_id)
+
+        return label_names, label_ids
 
     @staticmethod
     def get_labels_bidict(manager):
@@ -133,6 +157,24 @@ class labelManager:
             label_bidict[label["id"]] = label["name"]
 
         return label_bidict
+
+    @staticmethod
+    def get_done_labels(manager):
+
+        done_labels = []
+        for row in manager.labels.collection.get_rows():
+            if row.means_done:
+                done_labels.append(row.title)
+
+        return done_labels
+
+    @staticmethod
+    def get_label_tag_columns(manager):
+        """Returns a list of the columns """
+
+        label_columns = [column for column in manager.config["Label column name"].keys()]
+        column_types = [column_type for column_type in manager.config["Label column name"].values]
+        return label_columns, column_types
 
     @staticmethod
     def sync_labels_to_todoist(manager: syncManager):
@@ -149,27 +191,30 @@ class labelManager:
 
         # go label by label
         for row in manager.labels.collection.get_rows():
-            # first check if it has a TodoistID
+            # first check if the NotionID has been assigned yet
+            if not row.notionID:
+                row.notionID = row.id
+            # then check if it has a TodoistID
             if not row.todoistID:
                 # check if the name of the label matches one on todoist
-                if row.todoist_name in labels.values():
+                if row.todoist_label in labels.values():
                     # add todoist label id to notion
-                    row.todoistID = labels.inverse[row.todoist_name]
+                    row.todoistID = labels.inverse[row.todoist_label]
                 else:  # otherwise, add it to todoist
-                    print(f"Adding new label {row.todoist_name}")
-                    manager.api.labels.add(name=row.todoist_name)
+                    print(f"Adding new label {row.todoist_label}")
+                    manager.api.labels.add(name=row.todoist_label)
                     manager.commit_todoist_api()
 
                     # update label_bidict and add todoistID to notion
                     labels = labelManager.get_labels_bidict(manager)
-                    row.todoistID = labels.inverse[row.todoist_name]
+                    row.todoistID = labels.inverse[row.todoist_label]
 
-                    new_label_count += 1 # update label count
+                    new_label_count += 1  # update label count
             else:
                 # check if the name is different, if so, update name in todoist
-                if row.todoist_name != labels[row.todoistID]:
-                    print(f"Updating label {labels[row.todoistID]} ⮕ {row.todoist_name}")
-                    manager.api.labels.get_by_id(row.todoistID).update(name=row.todoist_name)
+                if row.todoist_label != labels[row.todoistID]:
+                    print(f"Updating label {labels[row.todoistID]} ⮕ {row.todoist_label}")
+                    manager.api.labels.get_by_id(row.todoistID).update(name=row.todoist_label)
                     manager.commit_todoist_api()
 
                     updated_label_count += 1  # update updated label count
