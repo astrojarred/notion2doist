@@ -229,7 +229,7 @@ class projectManager:
 
     @staticmethod
     def get_todoist_bidict(manager):
-        
+
         project_bidict = bidict({})
         for project in manager.api.projects.all():
             project_bidict[project["id"]] = project["name"]
@@ -306,6 +306,30 @@ class projectManager:
 
         print(f"Done syncing projects. {new_project_count} project(s) added "
               f"and {updated_project_count} projects(s) updated")
+
+    @staticmethod
+    def get_project_info(manager: syncManager, item, source="todoist"):
+
+        if source == "todoist":
+            todoist_project_id = item["project_id"]
+            project = manager.api.projects.get_by_id(todoist_project_id)['name']
+            # if the project is not in notion, return none
+            try:
+                notion_project_id = projectManager.get_cross_bidict(manager)[todoist_project_id]
+            except KeyError:
+                notion_project_id = None
+
+        else:
+            if not item.project:
+                project = []
+                todoist_project_id = None
+                notion_project_id = None
+            else:
+                project = item.project[0].title
+                todoist_project_id = item.project[0].TodoistID
+                notion_project_id = item.project[0].id
+
+        return project, todoist_project_id, notion_project_id
 
 
 class taskManager:
