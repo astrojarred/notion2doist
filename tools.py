@@ -3,6 +3,7 @@ import datetime
 from todoist.api import TodoistAPI
 import notion
 from notion.client import NotionClient
+from notion.collection import NotionDate
 import json
 from bidict import bidict
 from datetime import datetime, timezone
@@ -76,18 +77,18 @@ class syncManager:
         self.settings = self.client.get_collection_view(notion_settings_url)
 
         # extract and parse settings
-        self.config = {row.title: row.value for row in self.settings.collection.get_rows()}  # extract settings
-        self._parse_label_columns()
+        self.config = {}
+        self.sync_config()
 
         self.tasks = self.client.get_collection_view(
             "https://www.notion.so/" + self.config["Link to task database"]
-            )
+        )
         self.projects = self.client.get_collection_view(
             "https://www.notion.so/" + self.config["Link to project database"]
-            )
+        )
         self.labels = self.client.get_collection_view(
             "https://www.notion.so/" + self.config["Link to label database"]
-            )
+        )
 
         # initialize todoist api jsons
         self.old_sync = None
@@ -96,7 +97,6 @@ class syncManager:
         self.new_commit = None
 
     def sync_todoist_api(self):
-
         self.old_sync = self.new_sync
         self.new_sync = self.api.sync()
 
@@ -112,6 +112,10 @@ class syncManager:
             column_dict[key] = value
         self.config["Input label string"] = self.config['Label column name']
         self.config['Label column name'] = column_dict
+
+    def sync_config(self):
+        self.config = {row.title: row.value for row in self.settings.collection.get_rows()}  # extract settings
+        self._parse_label_columns()
 
 
 class labelManager:
