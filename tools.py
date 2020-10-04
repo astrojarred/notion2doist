@@ -631,3 +631,10 @@ class helper:
     @staticmethod
     def utc_to_local(utc_dt):
         return utc_dt.replace(tzinfo=timezone.utc).astimezone(tz=None)
+
+    @staticmethod
+    def strike(text):
+        result = ''
+        for c in str(text):
+            result = result + c + '\u0336'
+        return result
