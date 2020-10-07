@@ -173,7 +173,7 @@ class labelManager:
         """Returns a list of the columns """
 
         label_columns = [column for column in manager.config["Label column name"].keys()]
-        column_types = [column_type for column_type in manager.config["Label column name"].values]
+        column_types = [column_type for column_type in manager.config["Label column name"].values()]
         return label_columns, column_types
 
     @staticmethod
@@ -402,6 +402,7 @@ class taskManager:
         manager.sync_todoist_api()
 
         # loop task by task
+        # TODO: to eventually speed this up, we can filter by events changed within the last 24h, e.g.
         for row in manager.tasks.collection.get_rows():
             if not row.notionID:  # add the Notion ID to the row if it is not there already
                 row.notionID = row.id
@@ -423,22 +424,39 @@ class taskManager:
                     # merge tasks and sync changes to both notion and todoist
                     new_task, updates = taskManager.compare_two_tasks(manager, notion_task, todoist_task)
                     taskManager.update_todoist_item(manager, new_task, updates)
-                    # taskManager.update_notion_item(manager, new_task, updates)
+                    taskManager.update_notion_item(manager, new_task, updates)
 
     @staticmethod
     def update_notion_item(manager: syncManager, item: task, updates: list):
-        # TODO: left off here!
 
-        notion_item = manager.tasks.collection.get_rows(search=item.NotionID)
+        notion_item = manager.tasks.collection.get_rows(search=item.notion_task_id)[0]
 
         if "content" in updates:
             notion_item.title = item.content
         if "due" in updates:
             notion_item.due.start = NotionDate(datetime.datetime.strptime(item.due, "%Y-%m-%d").date())
-        if "labels" in updates:
-            pass
-            # TODO: left off here -- make sure to sort which labels go to which rows!
-            # notion_item.tags = item.label_names
+        if "label_ids" in updates:
+
+            # loop through each label column and add which labels apply
+            for relevant_column, column_type in manager.config["Label column name"].items():
+
+                if column_type == "select":
+                    labels = ""
+                else:
+                    labels = []
+
+                for label_id in item.label_ids:
+                    label_row = manager.labels.collection.get_rows(search=str(label_id))[0]
+                    label_column = label_row.relevant_column
+                    label_name = label_row.notion_label
+                    if label_column == relevant_column:
+                        if column_type == "select":
+                            labels = label_name
+                        else:
+                            labels.append(label_name)
+
+                notion_item.set_property(relevant_column, labels)
+
         if "project" in updates:
             notion_item.move(project_id=item.project_id)
         if "done" in updates:
@@ -456,7 +474,7 @@ class taskManager:
             todoist_item.update(content=item.content)
         if "due" in updates:
             todoist_item.update(due=item.due)
-        if "labels" in updates:
+        if "label_ids" in updates:
             todoist_item.update(labels=item.label_ids)
         if "project" in updates:
             todoist_item.move(project_id=item.project_id)
