@@ -210,6 +210,31 @@ class labelManager:
         return done_labels
 
     @staticmethod
+    def get_default_label(manager):
+
+        default_label = ""
+        for row in manager.labels.collection.get_rows():
+            if row.default:
+                default_label = row.title
+
+        return default_label
+
+    @staticmethod
+    def set_notion_done_label(manager: syncManager, item: task):
+
+        row = manager.tasks.collection.get_rows(search=str(item.task_id))[0]
+        if item.done:
+            new_status = labelManager.get_done_labels(manager)[0]
+        else:
+            new_status = labelManager.get_default_label(manager)
+
+        new_label, new_label_id = labelManager.translate_label(manager, new_status, source="Notion")
+        new_label_column = labelManager.get_relevant_column(manager, new_label_id)
+
+        row.set_property(new_label_column, new_status)
+
+    # PROBABLY NOT USEFUL: USE MANAGER.CONFIG INSTEAD
+    @staticmethod
     def get_label_tag_columns(manager):
         """Returns a list of the columns """
 
