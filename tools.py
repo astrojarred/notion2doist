@@ -243,6 +243,11 @@ class labelManager:
         return label_columns, column_types
 
     @staticmethod
+    def get_relevant_column(manager: syncManager, label_id):
+        row = manager.labels.collection.get_rows(search=str(label_id))[0]
+        return row.relevant_column
+
+    @staticmethod
     def sync_labels_to_todoist(manager: syncManager):
 
         print("Syncing labels...")
