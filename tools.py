@@ -165,6 +165,32 @@ class labelManager:
         return label_names, label_ids
 
     @staticmethod
+    def give_notion_labels(manager: syncManager, item: task):
+        """Return a dict with columns : label(s) structure"""
+
+        label_config = manager.config["Label column name"]
+        label_dict = {} # initialize output dictionary
+
+        label_ids, todoist_label_names = item.label_ids, item.label_names
+        label_names = [labelManager.translate_label(manager,label,source="todoist")[0] for label in todoist_label_names]
+        label_columns = [labelManager.get_relevant_column(manager, label_id) for label_id in label_ids]
+        unique_columns = list(set(label_columns))
+
+        # loop through columns and sort the tags into each column
+        for label_column in unique_columns:
+            column_type = label_config[label_column]
+            if column_type == "multi_select":
+                label_dict[label_column] = []
+            for label, column in zip(label_names, label_columns):  # loop through labels and add them if they
+                if column == label_column:                         # belong to the proper column
+                    if column_type == "select":
+                        label_dict[label_column] = label
+                    else:
+                        label_dict[label_column].append(label)
+
+        return label_dict
+
+    @staticmethod
     def get_labels_bidict(manager):
 
         label_bidict = bidict({})
