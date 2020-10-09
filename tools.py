@@ -571,7 +571,7 @@ class taskManager:
         if "content" in updates:
             todoist_item.update(content=item.content)
         if "due" in updates:
-            todoist_item.update(due=item.due)
+            todoist_item.update(due={"date": item.due})
         if "label_ids" in updates:
             todoist_item.update(labels=item.label_ids)
         if "project" in updates:
@@ -584,6 +584,7 @@ class taskManager:
 
         manager.commit_todoist_api()
 
+    # OKAY.
     @staticmethod
     def from_todoist(manager, item):
 
