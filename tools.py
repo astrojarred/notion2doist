@@ -1,6 +1,7 @@
 import datetime
 
 from todoist.api import TodoistAPI
+import todoist.models
 import notion
 from notion.client import NotionClient
 from notion.collection import NotionDate
