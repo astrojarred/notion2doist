@@ -419,6 +419,12 @@ class taskManager:
         return False
 
     @staticmethod
+    def force_newline(do_it: bool):
+        if do_it:
+            print("")
+        return False
+
+    @staticmethod
     def compare_two_tasks(manager: syncManager, task1: task, task2: task):
         """task 1 takes priority over task 2 if there are differences,
            usually task1 is notion version and task2 is the todoist version."""
@@ -428,19 +434,22 @@ class taskManager:
 
         new_task_dict = task1_dict.copy()
         updated_properties = []
+        if_is_first = True
 
         for (key, value1), value2 in zip(task1_dict.items(), task2_dict.values()):
-            if value1 != value2 and key != "source":  # exclude the "source" item
-                updated_properties.append(key)
+            if value1 != value2 and key not in ["source", "todoist_note_id"]:  # exclude the "source" and
+                updated_properties.append(key)                                  # and "todoist_note_id" columns
 
                 if value1 is None:
+                    if_is_first = taskManager.force_newline(do_it=if_is_first)
                     print(
-                        f"{key}: {helper.strike(task1_dict['source'] + ': ' + str(value1))} -> "
+                        f"    {key}: {helper.strike(task1_dict['source'] + ': ' + str(value1))} ⮕ "
                         f"{task2_dict['source'] + ': ' + str(value2)}")
                     new_task_dict[key] = value2
                 else:
+                    if_is_first = taskManager.force_newline(do_it=if_is_first)
                     print(
-                        f"{key}: {helper.strike(task2_dict['source'] + ': ' + str(value2))} -> "
+                        f"    {key}: {helper.strike(task2_dict['source'] + ': ' + str(value2))} ⮕ "
                         f"{task1_dict['source'] + ': ' + str(value1)}")
                     new_task_dict[key] = value1
             else:
@@ -462,6 +471,7 @@ class taskManager:
 
         return new_task, updated_properties
 
+    # OKAY. LOOPS THROUGH ALL NOTION TASKS
     @staticmethod
     def sync_notion_to_todoist(manager: syncManager):
 
