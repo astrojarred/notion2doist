@@ -740,6 +740,7 @@ class taskManager:
                     notion_item = taskManager.from_notion(manager, row)
 
                     # check for updates and sync them to notion
+                    # TODO: figure out why projects (and maybe other things?) are not syncing.
                     print(f'Updating task "{todoist_item.content}":')
                     new_item, updates = taskManager.compare_two_tasks(manager, todoist_item, notion_item)
                     taskManager.update_notion_item(manager, item=new_item, updates=updates)
