@@ -493,20 +493,29 @@ class taskManager:
             # check config for whether or not the event should be allowed to sync
             if not (not manager.config["Sync completed tasks"] and notion_task.done):
                 if not row.todoistID:  # check if the task already has a notionID
+                    print(f"Task: {row.title}: new!")
                     new_item_id, new_note_id = taskManager.to_todoist(manager, notion_task)  # send to todoist
                     row.todoistID = new_item_id  # add the todoist item ID back to the row in Notion
                     print(f"Synced new Notion task {row.title} to Todoist.")
                     new_project_count += 1
                 else:
                     # if it already has a todoistID, check for updates
+                    print(f'Task: "{row.title}"', end="")
                     todoist_item = manager.api.items.get_by_id(row.todoistID)
                     todoist_task = taskManager.from_todoist(manager, item=todoist_item)
 
                     # merge tasks and sync changes to both notion and todoist
                     new_task, updates = taskManager.compare_two_tasks(manager, notion_task, todoist_task)
-                    taskManager.update_todoist_item(manager, new_task, updates)
-                    taskManager.update_notion_item(manager, new_task, updates)
+                    if len(updates) > 0:
+                        taskManager.update_todoist_item(manager, new_task, updates)
+                        taskManager.update_notion_item(manager, new_task, updates)
+                        updated_project_count += 1
+                    else:
+                        print(": no change")
 
+        print(f"Added {new_project_count} and updated {updated_project_count} tasks.")
+
+    # OKAY
     @staticmethod
     def update_notion_item(manager: syncManager, item: task, updates: list):
 
