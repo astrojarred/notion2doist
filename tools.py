@@ -718,40 +718,130 @@ class taskManager:
         return new_item_id, new_note_id
 
     @staticmethod
-    def from_webhook(api, request_args):
+    def webhook_arrived(manager: syncManager, event_data: dict):
 
-        args = request_args
+        if event_data["event_name"] in ["item:added",
+                                        "item:updated",
+                                        "item:deleted",
+                                        "item:completed",
+                                        "item:uncompleted"]:
+            manager.sync_todoist_api()
+            updates = manager.new_sync
+            updated_items = updates["items"]
+            updated_item_ids = [item["id"] for item in updated_items]
 
-        is_done = True if args.get("checked") == 1 else False
+            for item_id in updated_item_ids:
+                # update each item in notion
+                notion_rows = manager.tasks.collection.get_rows(search=str(item_id))
+                if notion_rows:
+                    # update item
+                    todoist_item = taskManager.from_todoist(manager, manager.api.items.get_by_id(item_id))
+                    row = notion_rows[0]
+                    notion_item = taskManager.from_notion(manager, row)
 
+                    # check for updates and sync them to notion
+                    print(f'Updating task "{todoist_item.content}":')
+                    new_item, updates = taskManager.compare_two_tasks(manager, todoist_item, notion_item)
+                    taskManager.update_notion_item(manager, item=new_item, updates=updates)
+
+                else:
+                    # add item
+                    todoist_item = taskManager.from_todoist(manager, manager.api.items.get_by_id(item_id))
+                    print(f'Adding item "{todoist_item.content}":')
+                    taskManager.to_notion(manager, todoist_item)
+
+        else:
+            print(f"Ignoring webhook of type `{event_data['event_name']}`.")
+            return None
+
+    # NOT NECESSARY -- CHANGE TO NOTE NOT LABEL
+    @staticmethod
+    def add_do_not_sync_tag(manager: syncManager, todoist_item: todoist.models.Item):
+
+        tag, tag_ID = labelManager.translate_label(manager, manager.config["Sync tag"], source="Notion")
+
+        current_label_IDs = todoist_item["labels"]
+
+        todoist_item.update(labels=current_label_IDs.append(tag_ID))
+
+    # PROBABLY NOT NECESSARY
+    @staticmethod
+    def webhook_manager(manager: syncManager, event_data: dict):
+
+        event_name = event_data["event_name"]
+        todoist_id = event_data["id"]
+        item_events = ["item:added", "item:updated", "item:deleted", "item:completed", "item:uncompleted"]
+
+        if event_name not in item_events:
+            print(f'Event type "{event_name}" not important now... bye!')
+            return None
+
+        if event_name in ["item:added", "item:updated"]:
+            # have to add or edit an item
+            new_item = taskManager.from_webhook(manager, event_data)
+
+            if event_name == "item:added":
+                taskManager.to_notion(manager, new_item)
+                return None
+
+            original_item_row = manager.tasks.collection.get_rows(search=todoist_id)[0]
+            if event_name == "item:updated":
+
+                original_item = taskManager.from_todoist(manager, original_item_row)
+                synced_task, updates = taskManager.compare_two_tasks(manager, new_item, original_item)
+                taskManager.update_notion_item(manager, synced_task, updates)
+
+                return None
+
+        elif event_name in ["item:deleted", "item:completed", "item:uncompleted"]:
+            # only have to mark the notion task as done or not done
+            # TODO: replace with labelManager.set_notion_done_label()
+            original_item_row = manager.tasks.collection.get_rows(search=todoist_id)[0]
+            if event_name in ["item:deleted", "item:completed"]:
+                new_status = labelManager.get_done_labels(manager)[0]
+            else:
+                new_status = labelManager.get_default_label(manager)
+
+            new_label_id = labelManager.translate_label(manager, new_status, source="Notion")
+            new_label_column = labelManager.get_relevant_column(manager, new_label_id)
+
+            original_item_row.set_property(new_label_column, new_status)
+
+            return None
+
+    # PROBABLY NOT NECESSARY
+    @staticmethod
+    def from_webhook(manager: syncManager, event_data: dict):
         # check if there is a notion task ID in notes:
         notion_id = None
-        for note in api.notes.all():
-            if note["item_id"] == args.get('id') and "NotionID" in note["content"]:
-                notion_note_id = note["id"]
+        todoist_note_id = None
+        for note in manager.api.notes.all():
+            if note["item_id"] == event_data['id'] and "NotionID" in note["content"]:
+                todoist_note_id = note["id"]
                 notion_id = note["content"][10:]
+        # get label ids
+        label_ids = [int(label) for label in event_data["labels"]]
+
+        is_done = True if event_data["checked"] == 1 else False
 
         # check if due data available
         try:
-            due = args.get("due")["date"]
+            due = event_data["due"]["date"]
         except TypeError:
             due = None
-        print("LABELS:")
-        print([int(args.get('labels'))])
-        print(api.labels.get_by_id(int(args.get('labels'))))
-        print(api.labels.get_by_id(int(args.get('labels')))['name'])
 
         new_task = task(
             source="todoist",
-            task_id=args.get('id'),
-            content=args.get('content'),
+            task_id=event_data["id"],
+            content=event_data["checked"],
             done=is_done,
             due=due,
-            label_ids=[int(args.get('labels'))],
-            label_names=[api.labels.get_by_id(label)['name'] for label in [int(args.get('labels'))]],
-            project_id=args.get('project_id'),
-            project_name=api.projects.get_by_id(int(args.get('project_id')))['name'],
-            notion_project_id=notion_id
+            label_ids=label_ids,
+            label_names=[manager.api.labels.get_by_id(label)['name'] for label in label_ids],
+            project_id=event_data["project_id"],
+            project_name=manager.api.projects.get_by_id(int(event_data["project_id"]))['name'],
+            notion_project_id=notion_id,
+            todoist_note_id=todoist_note_id,
         )
 
         return new_task
