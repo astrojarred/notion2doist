@@ -1,45 +1,58 @@
 import os
 
-import notion
-from todoist.api import TodoistAPI
 from notion.client import NotionClient
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response, redirect, g
+import base64
+import hashlib
+import hmac
+import requests
 
 
 app = Flask(__name__)
 
 
-def createNotionTask(token, collectionURL, content):
-    # notion
-    client = NotionClient(token)
-    cv = client.get_collection_view(collectionURL)
-    row = cv.collection.add_row()
-    row.title = content
+def compute_hmac(body):
+
+    signature = base64.b64encode(hmac.new(
+        "4b34938abe2b41dfa9c1ccb257c6cea1".encode('utf-8'),
+        body,
+        digestmod=hashlib.sha256).digest()).decode('utf-8')
+    return signature
 
 
-@app.route('/from_webhook', methods=['GET'])
-def send_to_notion():
+@app.route("/webhook", methods=["POST"])
+def respond():
 
-    api = TodoistAPI("439fa9618e0338718f3f9293433df2911674edad")
+    request_hmac = request.headers.get('X-Todoist-Hmac-SHA256')
+    calculated_hmac = compute_hmac(request.get_data())
+    if request_hmac == calculated_hmac:
+        print(f"HMACs match! {request_hmac}")
+    else:
+        print("Dont match!")
 
-    # convert webhook task to custom task class
-    new_task = taskImporter.from_webhook(api=api, request_args=request.args)
+    data = request.json
+    print(data['event_name'])
+    print(data['event_data']['id'])
+    return Response(status=200)
 
-    print(new_task.__dict__)
 
-    return jsonify({'status': 'accepted'}), 200
+def post_todoist_oauth(code, state):
+
+    url = "https://todoist.com/oauth/access_token"
+    params = {"code": code, "state": state}
+
+
+@app.route("/auth")
+def enter():
+    print(request.args)
+    code = request.args.get("code")
+    state = request.args.get("state")
+
+    print(f"\n\nCode: {code}\nState: {state}")
+
+    return redirect("https://todoist.com/", code=302)
+
     
-
-@app.route('/create_todo', methods=['GET'])
-def create_todo():
-
-    todo = request.args.get('todo')
-    token_v2 = os.environ.get("TOKEN")
-    url = os.environ.get("URL")
-    createNotionTask(token_v2, url, todo)
-    return f'added {todo} to Notion'
-
-
 if __name__ == '__main__':
     app.debug = True
     port = int(os.environ.get("PORT", 5000))
