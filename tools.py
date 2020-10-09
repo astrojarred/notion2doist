@@ -78,6 +78,8 @@ class syncManager:
 
         # extract and parse settings
         self.config = {}
+        self.use_groups = False
+        self.sync_completed_tasks = False
         self.sync_config()
 
         self.tasks = self.client.get_collection_view(
@@ -116,6 +118,9 @@ class syncManager:
     def sync_config(self):
         self.config = {row.title: row.value for row in self.settings.collection.get_rows()}  # extract settings
         self._parse_label_columns()
+        self.use_groups = True if self.config["Use groups"].lower() in ["true", "yes", "y", "t"] else False
+        self.sync_completed_tasks = True if self.config["Sync completed tasks"].lower() in\
+                                            ["true", "yes", "y", "t"] else False
 
 
 class labelManager:
