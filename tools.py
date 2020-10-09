@@ -661,35 +661,42 @@ class taskManager:
 
         return new_task
 
+    # NEED TO REFORMAT !
     @staticmethod
-    def to_notion(item: task, notion_table, project_table):
+    def to_notion(manager: syncManager, item: task):
 
-        notion_table.refresh()
+        manager.tasks.refresh()
 
-        if not isinstance(item, task):
-            raise TypeError("Input task must be of class `taskManager.task`.")
+        # get project info
+        project = manager.projects.collection.get_rows(search=str(item.project_id))[0]
 
-        if not isinstance(notion_table, notion.block.CollectionViewPageBlock):
-            raise TypeError("Input table must be of `notion.block.CollectionViewPageBlock` type.")
+        # check if due date data available
+        try:
+            due = NotionDate(start=datetime.strptime(item.due, "%Y-%m-%d").date())
+        except AttributeError:
+            due = None
 
-        status = "Done 🙌" if item.done else \
-            taskManager.label_translator(output="notion", todoist_id=item.label_ids[0])[1]
+        # get labels
+        label_dict = labelManager.give_notion_labels(manager, item)
 
-        project = project_table.collection.get_rows(search=str(item.project_id))[0]
-
-        group = project.group[0]
-
-        new_row = notion_table.collection.add_row()
+        new_row = manager.tasks.collection.add_row()
         new_row.name = item.content
         new_row.TodoistID = item.task_id
-        new_row.due = notion_table.collection.NotionDate(start=datetime.datetime.strptime(item.due, "%Y-%m-%d").date())
-        new_row.status = status
+        new_row.due = due
         new_row.project = project
         new_row.NotionID = new_row.id
-        new_row.group = group
 
-        print(f"Imported task {item.content} with status {status}")
+        # set group if necessary
+        if manager.use_groups:
+            new_row.group = project.group[0]
 
+        # set labels:
+        for label_column, labels in label_dict.items():
+            new_row.set_property(label_column, labels)
+
+        print(f"Imported task {item.content} with labels {item.label_names}.")
+
+    # OKAY
     @staticmethod
     def to_todoist(manager: syncManager, item: task):
 
