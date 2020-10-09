@@ -625,6 +625,7 @@ class taskManager:
 
         return new_task
 
+    # OKAY
     @staticmethod
     def from_notion(manager, row):
 
@@ -637,12 +638,18 @@ class taskManager:
         # add notion ID to the task table
         row.NotionID = row.id
 
+        # check if due date data available
+        try:
+            due = row.due.start.strftime(format="%Y-%m-%d")
+        except AttributeError:
+            due = None
+
         new_task = task(
             source="notion",
             task_id=row.TodoistID,
             content=row.title,
             done=is_done,
-            due=row.due.start.strftime(format="%Y-%m-%d"),
+            due=due,
             label_ids=todoist_label_ids,
             label_names=todoist_labels,
             project_id=todoist_project_id,
