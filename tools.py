@@ -140,18 +140,27 @@ class labelManager:
     def get_notion_labels(manager, row):
         """Always returns todoist label names and IDs"""
 
+        row.refresh()
+
         label_config = manager.config['Label column name']
         label_names, label_ids = [], []
 
         for label_column in label_config.keys():
             row_labels = row.get_property(label_column)
-            if not isinstance(row_labels, list):  # if column is single-select, convert it to a list
-                row_labels = [row_labels]
-            # add labels to list and translate to todoist labels
-            for label in row_labels:
-                todoist_label, todoist_id = labelManager.translate_label(manager, label, source="notion")
-                label_names.append(todoist_label)
-                label_ids.append(todoist_id)
+            if not row_labels:
+                # catch NoneType
+                continue
+            elif not row_labels[0]:
+                # and catch a list with an empty string inside
+                continue
+            else:
+                if not isinstance(row_labels, list):  # if column is single-select, convert it to a list
+                    row_labels = [row_labels]
+                # add labels to list and translate to todoist labels
+                for label in row_labels:
+                    todoist_label, todoist_id = labelManager.translate_label(manager, label, source="notion")
+                    label_names.append(todoist_label)
+                    label_ids.append(todoist_id)
 
         return label_names, label_ids
 
