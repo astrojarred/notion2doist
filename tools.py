@@ -524,7 +524,12 @@ class taskManager:
         if "content" in updates:
             notion_item.title = item.content
         if "due" in updates:
-            notion_item.due.start = NotionDate(datetime.datetime.strptime(item.due, "%Y-%m-%d").date())
+            # get due date
+            if item.due is not None:
+                due = NotionDate(start=datetime.strptime(item.due, "%Y-%m-%d").date())
+            else:
+                due = None
+            notion_item.due = due
         if "label_ids" in updates:
 
             # loop through each label column and add which labels apply
@@ -548,13 +553,16 @@ class taskManager:
                 notion_item.set_property(relevant_column, labels)
 
         if "project" in updates:
-            notion_item.move(project_id=item.project_id)
-        if "done" in updates:
-            if item.done:
-                notion_item.complete()
-            else:
-                notion_item.uncomplete()
+            project = manager.projects.collection.get_rows(search=str(item.project_id))[0]
+            notion_item.project = project
+            # set group if necessary
+            if manager.use_groups:
+                notion_item.group = project.group[0]
 
+        if "done" in updates:
+            labelManager.set_notion_done_label(manager, item)
+
+    # OKAY.
     @staticmethod
     def update_todoist_item(manager: syncManager, item: task, updates: list):
 
