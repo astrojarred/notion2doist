@@ -14,7 +14,7 @@ app = Flask(__name__)
 def compute_hmac(body):
 
     signature = base64.b64encode(hmac.new(
-        "4b34938abe2b41dfa9c1ccb257c6cea1".encode('utf-8'),
+        "ab9df4df62681fd519648c413750c611cad02048".encode('utf-8'),
         body,
         digestmod=hashlib.sha256).digest()).decode('utf-8')
     return signature
@@ -33,6 +33,13 @@ def respond():
     data = request.json
     print(data['event_name'])
     print(data['event_data']['id'])
+    return Response(status=200)
+
+
+@app.route("/test", methods=["GET"])
+def testing_get():
+
+    print("TESTING GOT!")
     return Response(status=200)
 
 
