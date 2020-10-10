@@ -121,6 +121,8 @@ class syncManager:
         self.use_groups = True if self.config["Use groups"].lower() in ["true", "yes", "y", "t"] else False
         self.sync_completed_tasks = True if self.config["Sync completed tasks"].lower() in\
                                             ["true", "yes", "y", "t"] else False
+        self.config['Sync completed tasks'] = self.sync_completed_tasks
+        self.config['Use groups'] = self.use_groups
 
 
 class labelManager:
@@ -479,9 +481,6 @@ class taskManager:
         new_project_count = 0
         updated_project_count = 0
 
-        # sync todoist api
-        manager.sync_todoist_api()
-
         # loop task by task
         # TODO: to eventually speed this up, we can filter by events changed within the last 24h, e.g.
         for row in manager.tasks.collection.get_rows():
@@ -492,6 +491,7 @@ class taskManager:
 
             # check config for whether or not the event should be allowed to sync
             if not (not manager.config["Sync completed tasks"] and notion_task.done):
+                print(notion_task.content, manager.config["Sync completed tasks"], notion_task.done)
                 if not row.todoistID:  # check if the task already has a notionID
                     print(f"Task: {row.title}: new!")
                     new_item_id, new_note_id = taskManager.to_todoist(manager, notion_task)  # send to todoist
@@ -552,12 +552,12 @@ class taskManager:
 
                 notion_item.set_property(relevant_column, labels)
 
-        if "project" in updates:
-            project = manager.projects.collection.get_rows(search=str(item.project_id))[0]
+        if "project_id" in updates:
+            project = [manager.projects.collection.get_rows(search=str(item.project_id))[0]]
             notion_item.project = project
             # set group if necessary
             if manager.use_groups:
-                notion_item.group = project.group[0]
+                notion_item.group = list(project.group)
 
         if "done" in updates:
             labelManager.set_notion_done_label(manager, item)
@@ -581,6 +581,9 @@ class taskManager:
                 todoist_item.complete()
             else:
                 todoist_item.uncomplete()
+
+        # add note containing sync time
+        sync_note_id = taskManager.add_todoist_note(manager, item, note="sync")
 
         manager.commit_todoist_api()
 
@@ -696,6 +699,30 @@ class taskManager:
 
         print(f"Imported task {item.content} with labels {item.label_names}.")
 
+        return new_row.id
+
+    @staticmethod
+    def add_todoist_note(manager: syncManager, item: task, todoist_id=None, note="NotionID"):
+        """Add a note to a todoist item containing the notion ID"""
+
+        if note.lower() == "notionid":
+            note_content = f"NotionID: {item.notion_task_id}"
+        elif note.lower() == "sync":
+            note_content = f"Synced from Notion: {datetime.now().strftime('%m/%d/%Y %H:%M:%S')}"
+        else:
+            note_content = note
+
+        # get todoist id from item if     
+        if todoist_id is None:
+            todoist_id = item.task_id
+
+        # add and commit note
+        manager.api.notes.add(todoist_id, note_content)
+        note_commit = manager.api.commit()
+        new_note_id = note_commit['notes'][0]['id']
+
+        return new_note_id
+
     # OKAY
     @staticmethod
     def to_todoist(manager: syncManager, item: task):
@@ -711,9 +738,10 @@ class taskManager:
         item_commit = manager.api.commit()
         new_item_id = item_commit['items'][0]['id']
 
-        note = manager.api.notes.add(new_item_id, f"NotionID: {item.notion_task_id}")
-        note_commit = manager.api.commit()
-        new_note_id = note_commit['notes'][0]['id']
+        # add note to the item containing the notion ID
+        new_note_id = taskManager.add_todoist_note(manager, item, new_item_id, note="NotionID")
+        # add note containing sync time
+        sync_note_id = taskManager.add_todoist_note(manager, item, new_item_id, note="sync")
 
         return new_item_id, new_note_id
 
@@ -729,27 +757,46 @@ class taskManager:
             updates = manager.new_sync
             updated_items = updates["items"]
             updated_item_ids = [item["id"] for item in updated_items]
+            is_deleted = False
 
             for item_id in updated_item_ids:
+                # check that the webhook wasn't just sent from us
+                # check if there is a notion task ID in notes:
+                for note in manager.api.notes.all():
+                    if note["item_id"] == item_id and "Synced from Notion" in note["content"]:
+                        print(f"Item {item_id} was just synced from notion. Skipping...")
+                        continue
+
                 # update each item in notion
                 notion_rows = manager.tasks.collection.get_rows(search=str(item_id))
                 if notion_rows:
                     # update item
-                    todoist_item = taskManager.from_todoist(manager, manager.api.items.get_by_id(item_id))
                     row = notion_rows[0]
                     notion_item = taskManager.from_notion(manager, row)
 
-                    # check for updates and sync them to notion
-                    # TODO: figure out why projects (and maybe other things?) are not syncing.
-                    print(f'Updating task "{todoist_item.content}":')
-                    new_item, updates = taskManager.compare_two_tasks(manager, todoist_item, notion_item)
-                    taskManager.update_notion_item(manager, item=new_item, updates=updates)
+                    try:
+                        todoist_item = taskManager.from_todoist(manager, manager.api.items.get_by_id(item_id))
+                    except TypeError:  # Catch deleted items that don't show up
+                        todoist_item = notion_item
+                        is_deleted = True
+
+                    if not is_deleted:
+                        # check for updates and sync them to notion
+                        print(f'Updating task "{todoist_item.content}":', end="")
+                        new_item, updates = taskManager.compare_two_tasks(manager, todoist_item, notion_item)
+                        taskManager.update_notion_item(manager, item=new_item, updates=updates)
+                    else:
+                        # set to done
+                        notion_item.done = True
+                        labelManager.set_notion_done_label(manager, notion_item)
 
                 else:
                     # add item
                     todoist_item = taskManager.from_todoist(manager, manager.api.items.get_by_id(item_id))
-                    print(f'Adding item "{todoist_item.content}":')
-                    taskManager.to_notion(manager, todoist_item)
+                    print(f'Adding item "{todoist_item.content}":', end="")
+                    new_notion_id = taskManager.to_notion(manager, todoist_item)
+                    todoist_item.notion_task_id = new_notion_id
+                    taskManager.add_todoist_note(manager, todoist_item, note="NotionID")
 
         else:
             print(f"Ignoring webhook of type `{event_data['event_name']}`.")
