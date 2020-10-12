@@ -446,7 +446,7 @@ class taskManager:
 
         for (key, value1), value2 in zip(task1_dict.items(), task2_dict.values()):
             if value1 != value2 and key not in ["source", "todoist_note_id"]:  # exclude the "source" and
-                updated_properties.append(key)                                  # and "todoist_note_id" columns
+                updated_properties.append(key)  # and "todoist_note_id" columns
 
                 if value1 is None:
                     if_is_first = taskManager.force_newline(do_it=if_is_first)
@@ -479,7 +479,6 @@ class taskManager:
 
         return new_task, updated_properties
 
-    # OKAY. LOOPS THROUGH ALL NOTION TASKS
     @staticmethod
     def sync_notion_to_todoist(manager: syncManager, full_sync=False):
 
