@@ -776,6 +776,8 @@ class taskManager:
                 for note in manager.api.notes.all():
                     if note["item_id"] == item_id and "Synced from Notion" in note["content"]:
                         print(f"Item {item_id} was just synced from notion. Skipping...")
+                        note.delete()
+                        manager.commit_todoist_api()
                         continue
 
                 # update each item in notion
