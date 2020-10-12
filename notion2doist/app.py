@@ -5,6 +5,7 @@ import hashlib
 import hmac
 import tools
 from apscheduler.schedulers.background import BackgroundScheduler
+import atexit
 
 app = Flask(__name__)
 
@@ -70,6 +71,9 @@ if __name__ == '__main__':
     scheduler = BackgroundScheduler()
     job = scheduler.add_job(check_notion_for_updates, 'interval', minutes=3)
     scheduler.start()
+
+    # Shut down the scheduler when exiting the app
+    atexit.register(lambda: scheduler.shutdown())
 
     app.debug = True
     port = int(os.environ.get("PORT", 5000))
