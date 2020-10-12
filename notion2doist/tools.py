@@ -7,7 +7,7 @@ from notion.client import NotionClient
 from notion.collection import NotionDate
 import json
 from bidict import bidict
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 
 class task:
@@ -97,6 +97,7 @@ class syncManager:
         self.new_sync = None
         self.old_commit = None
         self.new_commit = None
+        self.last_notion_sync_time = helper.add_local_tz(datetime(2020, 1, 1, 0, 0, 0, 0))
 
     def sync_todoist_api(self):
         self.old_sync = self.new_sync
@@ -105,6 +106,12 @@ class syncManager:
     def commit_todoist_api(self):
         self.old_commit = self.new_commit
         self.new_commit = self.api.commit()
+
+    def update_notion_sync_time(self):
+        self.last_notion_sync_time = helper.add_local_tz(datetime.now())
+
+    def sync_notion_tasks(self):
+        taskManager.sync_notion_to_todoist(self)
 
     def _parse_label_columns(self):
         column_list = self.config['Label column name']
@@ -119,10 +126,11 @@ class syncManager:
         self.config = {row.title: row.value for row in self.settings.collection.get_rows()}  # extract settings
         self._parse_label_columns()
         self.use_groups = True if self.config["Use groups"].lower() in ["true", "yes", "y", "t"] else False
-        self.sync_completed_tasks = True if self.config["Sync completed tasks"].lower() in\
+        self.sync_completed_tasks = True if self.config["Sync completed tasks"].lower() in \
                                             ["true", "yes", "y", "t"] else False
         self.config['Sync completed tasks'] = self.sync_completed_tasks
         self.config['Use groups'] = self.use_groups
+        print("Sync configuration updated.")
 
 
 class labelManager:
@@ -475,7 +483,7 @@ class taskManager:
 
     # OKAY. LOOPS THROUGH ALL NOTION TASKS
     @staticmethod
-    def sync_notion_to_todoist(manager: syncManager):
+    def sync_notion_to_todoist(manager: syncManager, full_sync=False):
 
         print("Syncing notion tasks to todoist...")
         new_project_count = 0
@@ -484,14 +492,24 @@ class taskManager:
         # loop task by task
         # TODO: to eventually speed this up, we can filter by events changed within the last 24h, e.g.
         for row in manager.tasks.collection.get_rows():
+            # refresh the row
+            row.refresh()
+
             if not row.notionID:  # add the Notion ID to the row if it is not there already
+                print(f"Adding notion ID for task: {row.title}")
                 row.notionID = row.id
+
+            # only update the task if its `last edited` timestamp if after the last sync with Notion
+            if not helper.utc_to_local(row.last_edited) >= manager.last_notion_sync_time - timedelta(minutes=5) \
+                    and not full_sync:
+                # print(f"{row.title}: Updated: {helper.utc_to_local(row.last_edited)}")
+                # print(f"Updated {row.title} too long ago")
+                continue
 
             notion_task = taskManager.from_notion(manager, row)  # get the task from Notion
 
             # check config for whether or not the event should be allowed to sync
             if not (not manager.config["Sync completed tasks"] and notion_task.done):
-                print(notion_task.content, manager.config["Sync completed tasks"], notion_task.done)
                 if not row.todoistID:  # check if the task already has a notionID
                     print(f"Task: {row.title}: new!")
                     new_item_id, new_note_id = taskManager.to_todoist(manager, notion_task)  # send to todoist
@@ -513,9 +531,10 @@ class taskManager:
                     else:
                         print(": no change")
 
+        # Update last notion sync time in the manager
+        manager.update_notion_sync_time()
         print(f"Added {new_project_count} and updated {updated_project_count} tasks.")
 
-    # OKAY
     @staticmethod
     def update_notion_item(manager: syncManager, item: task, updates: list):
 
@@ -562,7 +581,6 @@ class taskManager:
         if "done" in updates:
             labelManager.set_notion_done_label(manager, item)
 
-    # OKAY.
     @staticmethod
     def update_todoist_item(manager: syncManager, item: task, updates: list):
 
@@ -587,7 +605,6 @@ class taskManager:
 
         manager.commit_todoist_api()
 
-    # OKAY.
     @staticmethod
     def from_todoist(manager, item):
 
@@ -628,7 +645,6 @@ class taskManager:
 
         return new_task
 
-    # OKAY
     @staticmethod
     def from_notion(manager, row):
 
@@ -664,7 +680,6 @@ class taskManager:
 
         return new_task
 
-    # NEED TO REFORMAT !
     @staticmethod
     def to_notion(manager: syncManager, item: task):
 
@@ -723,7 +738,6 @@ class taskManager:
 
         return new_note_id
 
-    # OKAY
     @staticmethod
     def to_todoist(manager: syncManager, item: task):
 
@@ -898,8 +912,12 @@ class taskManager:
 class helper:
 
     @staticmethod
-    def utc_to_local(utc_dt):
+    def utc_to_local(utc_dt: datetime):
         return utc_dt.replace(tzinfo=timezone.utc).astimezone(tz=None)
+
+    @staticmethod
+    def add_local_tz(local_dt: datetime):
+        return local_dt.astimezone(tz=None)
 
     @staticmethod
     def strike(text):
