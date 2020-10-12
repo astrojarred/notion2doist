@@ -49,12 +49,6 @@ def testing_get():
     return Response("This is my site!", status=200)
 
 
-@app.route("/", methods=["GET"])
-def testing_get():
-
-    return Response("Syncing!", status=200)
-
-
 @app.route("/auth")
 def enter():
     print(request.args)
