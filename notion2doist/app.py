@@ -59,6 +59,12 @@ def enter():
 
     return redirect("https://todoist.com/", code=302)
 
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def catch_all(path):
+    return redirect("https://todoist.com/", code=302)
+
     
 if __name__ == '__main__':
 
