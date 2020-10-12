@@ -1,1 +1,1 @@
-web: python app.py
+web: python ./notion2doist/app.py
