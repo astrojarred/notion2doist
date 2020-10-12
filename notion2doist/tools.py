@@ -1,13 +1,10 @@
-import datetime
+import json
+from datetime import datetime, timezone, timedelta
 
-from todoist.api import TodoistAPI
-import todoist.models
-import notion
+from bidict import bidict
 from notion.client import NotionClient
 from notion.collection import NotionDate
-import json
-from bidict import bidict
-from datetime import datetime, timezone, timedelta
+from todoist.api import TodoistAPI
 
 
 class task:
