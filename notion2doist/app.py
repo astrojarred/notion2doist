@@ -81,6 +81,6 @@ if __name__ == '__main__':
     # Shut down the scheduler when exiting the app
     atexit.register(lambda: scheduler.shutdown())
 
-    app.debug = True
+    # app.debug = True
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
