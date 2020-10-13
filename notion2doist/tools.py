@@ -604,7 +604,11 @@ class taskManager:
             else:
                 todoist_item.uncomplete()
 
-        # add note containing sync time
+        # check if there is already a notion sync note -- if so, delete it!
+        for note in manager.api.notes.all():
+            if note["item_id"] == item.task_id and "Synced from Notion" in note["content"]:
+                note.delete()
+                # add note containing sync time
         sync_note_id = taskManager.add_todoist_note(manager, item, note="sync")
 
         manager.commit_todoist_api()
