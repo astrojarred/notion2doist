@@ -357,7 +357,12 @@ class projectManager:
 
         # go label by label
         for project in manager.projects.collection.get_rows():
-            # first check if it has a TodoistID
+            # first check if it has a NotionID
+            if not project.notionID:  # add the Notion ID to the row if it is not there already
+                print(f"Adding notion project ID to: {project.title}")
+                project.notionID = project.id
+
+            # then check if it has a TodoistID
             if not project.todoistID:
                 # check if the name of the project matches one on todoist
                 if project.title in todoist_projects.values():
@@ -591,7 +596,7 @@ class taskManager:
             todoist_item.update(due={"date": item.due})
         if "label_ids" in updates:
             todoist_item.update(labels=item.label_ids)
-        if "project" in updates:
+        if "project_id" in updates:
             todoist_item.move(project_id=item.project_id)
         if "done" in updates:
             if item.done:
