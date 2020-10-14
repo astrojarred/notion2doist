@@ -524,7 +524,6 @@ class taskManager:
                 else:
                     # if it already has a todoistID, check for updates
                     print(f'Task: "{row.title}"', end="")
-                    todoist_item = manager.api.items.get_by_id(row.todoistID)
                     todoist_task = taskManager.from_todoist(manager, item=todoist_item)
 
                     # merge tasks and sync changes to both notion and todoist
