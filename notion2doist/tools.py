@@ -514,7 +514,8 @@ class taskManager:
 
             # check config for whether or not the event should be allowed to sync
             if not (not manager.config["Sync completed tasks"] and notion_task.done):
-                if not row.todoistID:  # check if the task already has a notionID
+                todoist_item = manager.api.items.get_by_id(row.todoistID)
+                if not todoist_item:  # check if the task already exists
                     print(f"Task: {row.title}: new!")
                     new_item_id, new_note_id = taskManager.to_todoist(manager, notion_task)  # send to todoist
                     row.todoistID = new_item_id  # add the todoist item ID back to the row in Notion
