@@ -489,6 +489,7 @@ class taskManager:
     @staticmethod
     def sync_notion_to_todoist(manager: syncManager, full_sync=False):
 
+        # TODO: batch updates together before committing
         print("Syncing notion tasks to todoist...")
         new_project_count = 0
         updated_project_count = 0
@@ -782,6 +783,7 @@ class taskManager:
             is_deleted = False
 
             for item_id in updated_item_ids:
+                print(f"current item id: {item_id}")
                 # check that the webhook wasn't just sent from us
                 # check if there is a notion task ID in notes:
                 for note in manager.api.notes.all():
