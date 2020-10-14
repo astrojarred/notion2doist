@@ -65,6 +65,21 @@ def enter():
 def catch_all(path):
     return redirect("https://todoist.com/", code=302)
 
+
+# set up manager and schedule todoist updater
+manager = tools.syncManager(
+        todoist_token=os.environ["TODOIST_TOKEN"],
+        notion_token=os.environ["NOTION_TOKEN"],
+        notion_settings_url=os.environ["NOTION_SETTINGS"],
+    )
+
+scheduler = BackgroundScheduler(daemon=True)
+job = scheduler.add_job(check_notion_for_updates, 'interval', minutes=3)
+scheduler.start()
+
+# Shut down the scheduler when exiting the app
+# atexit.register(lambda: scheduler.shutdown())
+
     
 if __name__ == '__main__':
 
