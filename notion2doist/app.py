@@ -83,19 +83,6 @@ scheduler.start()
     
 if __name__ == '__main__':
 
-    manager = tools.syncManager(
-        todoist_token=os.environ["TODOIST_TOKEN"],
-        notion_token=os.environ["NOTION_TOKEN"],
-        notion_settings_url=os.environ["NOTION_SETTINGS"],
-    )
-
-    scheduler = BackgroundScheduler()
-    job = scheduler.add_job(check_notion_for_updates, 'interval', minutes=3)
-    scheduler.start()
-
-    # Shut down the scheduler when exiting the app
-    atexit.register(lambda: scheduler.shutdown())
-
-    # app.debug = True
+    app.debug = True
     port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=port, use_reloader=False)
