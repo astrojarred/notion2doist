@@ -78,7 +78,7 @@ job = scheduler.add_job(check_notion_for_updates, 'interval', minutes=3)
 scheduler.start()
 
 # Shut down the scheduler when exiting the app
-# atexit.register(lambda: scheduler.shutdown())
+atexit.register(lambda: scheduler.shutdown(wait=False))
 
     
 if __name__ == '__main__':
