@@ -36,9 +36,11 @@ def respond():
         data = request.json
         print(data['event_name'])
         print(f"{data['event_data']['id']}: {data['event_data']['content']}")
-        tools.taskManager.webhook_arrived(manager, data)
+        hook_job = scheduler.add_job(tools.taskManager.webhook_arrived, args=[manager, data])
+        # tools.taskManager.webhook_arrived(manager, data)
         return Response(status=200)
     else:
+        print("HMACs don't match!! Check this out!!!")
         return Response(status=400)
 
 
@@ -74,7 +76,7 @@ manager = tools.syncManager(
     )
 
 scheduler = BackgroundScheduler(daemon=True)
-job = scheduler.add_job(check_notion_for_updates, 'interval', minutes=3)
+notion_job = scheduler.add_job(check_notion_for_updates, 'interval', minutes=3)
 scheduler.start()
 
 # Shut down the scheduler when exiting the app
