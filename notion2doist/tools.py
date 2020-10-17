@@ -5,6 +5,7 @@ from bidict import bidict
 from notion.client import NotionClient
 from notion.collection import NotionDate
 from todoist.api import TodoistAPI
+from pytodoist import todoist
 
 
 class task:
@@ -72,6 +73,7 @@ class syncManager:
         self.api = TodoistAPI(todoist_token)
         self.client = NotionClient(token_v2=notion_token)
         self.settings = self.client.get_collection_view(notion_settings_url)
+        self.todo = todoist.login_with_api_token(todoist_token)
 
         # extract and parse settings
         self.config = {}
@@ -845,3 +847,9 @@ class helper:
         for c in str(text):
             result = result + c + '\u0336'
         return result
+
+class taskManager2:
+
+    @staticmethod
+    def from_notion(manager: syncManager, row):
+        pass
