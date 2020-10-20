@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" remoteFilesAllowedToDisappearOnAutoupload="false">
+    <serverData>
+      <paths name="ASTRI01">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$/../astrispec" web="/" />
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="ASTRI01 ssh">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$/../astrispec" web="/" />
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="ASTRI03">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$/../astrispec" web="/" />
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>
