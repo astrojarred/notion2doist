@@ -4,8 +4,6 @@ import base64
 import hashlib
 import hmac
 import tools
-from apscheduler.schedulers.background import BackgroundScheduler
-import atexit
 
 app = Flask(__name__)
 
@@ -90,14 +88,6 @@ manager = tools.syncManager(
         notion_token=os.environ["NOTION_TOKEN"],
         notion_settings_url=os.environ["NOTION_SETTINGS"],
     )
-
-scheduler = BackgroundScheduler(daemon=True)
-notion_job = scheduler.add_job(check_notion_for_updates, 'interval', minutes=3)
-scheduler.start()
-
-# Shut down the scheduler when exiting the app
-atexit.register(lambda: scheduler.shutdown(wait=False))
-
     
 if __name__ == '__main__':
 
