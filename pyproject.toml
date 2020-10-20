@@ -1,11 +1,11 @@
 [tool.poetry]
 name = "notion-to-doist"
-version = "0.1.0"
+version = "0.2.0"
 description = "A hacked-together two-way sync between a Notion relational database and a todoist account."
 authors = ["Jarred Green <astrojarred@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "3.7"
+python = "^3.8"
 Flask = "^1.1.2"
 todoist-python = "^8.1.2"
 notion-py = "^0.0.6"
