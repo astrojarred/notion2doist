@@ -19,11 +19,11 @@ def compute_hmac(body):
     return signature
 
 
-def check_notion_for_updates():
+def check_notion_for_updates(full_sync=False):
     print("\nChecking Notion for updates...")
     tools.labelManager.sync_labels_to_todoist(manager)
     tools.projectManager.sync_projects(manager)
-    tools.taskManager.sync_notion_to_todoist(manager, full_sync=False)
+    tools.taskManager.sync_notion_to_todoist(manager, full_sync=full_sync)
 
 
 @app.route("/webhook", methods=["POST"])
@@ -42,6 +42,22 @@ def respond():
     else:
         print("HMACs don't match!! Check this out!!!")
         return Response(status=400)
+
+
+@app.route("/sync_notion", methods=["GET"])
+def sync_notion():
+
+    if request.args.get("id") != manager.config["Sync password"]:
+        return Response("Illegal operation!", status=400)
+
+    if request.args.get("full_sync").lower() in ["true", "yes"]:
+        full_sync = True
+    else:
+        full_sync = False
+
+    check_notion_for_updates(full_sync=full_sync)
+
+    return redirect("https://todoist.com/", code=302)
 
 
 @app.route("/test", methods=["GET"])
