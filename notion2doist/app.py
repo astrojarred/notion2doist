@@ -22,9 +22,6 @@ from todoist.api import TodoistAPI
 from zappa.asynchronous import task as zappa_task
 
 
-app = Flask(__name__)
-
-
 class task:
 
     def __init__(self,
@@ -882,6 +879,7 @@ def webhook_arrived(event_data: dict):
         print(f"Ignoring webhook of type `{event_data['event_name']}`.")
         return None
 
+app = Flask(__name__)
 
 @app.route("/webhook", methods=["POST"])
 def respond():
@@ -922,11 +920,12 @@ def test():
 
 
 # set up manager and schedule todoist updater
-Manager = syncManager(
-        todoist_token=os.environ.get("TODOIST_TOKEN"),
-        notion_token=os.environ.get("NOTION_TOKEN"),
-        notion_settings_url=os.environ.get("NOTION_SETTINGS"),
-    )
+if 'SERVERTYPE' in os.environ and os.environ['SERVERTYPE'] == 'AWS Lambda':
+    Manager = syncManager(
+            todoist_token=os.environ.get("TODOIST_TOKEN"),
+            notion_token=os.environ.get("NOTION_TOKEN"),
+            notion_settings_url=os.environ.get("NOTION_SETTINGS"),
+        )
 
 if __name__ == '__main__':
 
