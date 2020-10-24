@@ -781,6 +781,65 @@ class taskManager:
 
         return new_item_id, new_note_id
 
+    @staticmethod
+    def webhook_arrived(manager: syncManager, event_data: dict):
+
+        if event_data["event_name"] in ["item:added",
+                                        "item:updated",
+                                        "item:deleted",
+                                        "item:completed",
+                                        "item:uncompleted"]:
+            manager.sync_todoist_api()
+            updates = manager.new_sync
+            updated_items = updates["items"]
+            updated_item_ids = [item["id"] for item in updated_items]
+            is_deleted = False
+
+            for item_id in updated_item_ids:
+                print(f"current item id: {item_id}")
+                # check that the webhook wasn't just sent from us
+                # check if there is a notion task ID in notes:
+                for note in manager.api.notes.all():
+                    if note["item_id"] == item_id and "Synced from Notion" in note["content"]:
+                        print(f"Item {item_id} was just synced from notion. Skipping...")
+                        note.delete()
+                        manager.commit_todoist_api()
+                        continue
+
+                # update each item in notion
+                notion_rows = manager.tasks.collection.get_rows(search=str(item_id))
+                if notion_rows:
+                    # update item
+                    row = notion_rows[0]
+                    notion_item = taskManager.from_notion(manager, row)
+
+                    try:
+                        todoist_item = taskManager.from_todoist(manager, manager.api.items.get_by_id(item_id))
+                    except TypeError:  # Catch deleted items that don't show up
+                        todoist_item = notion_item
+                        is_deleted = True
+
+                    if not is_deleted:
+                        # check for updates and sync them to notion
+                        print(f'Updating task "{todoist_item.content}":', end="")
+                        new_item, updates = taskManager.compare_two_tasks(manager, todoist_item, notion_item)
+                        taskManager.update_notion_item(manager, item=new_item, updates=updates)
+                    else:
+                        # set to done
+                        notion_item.done = True
+                        labelManager.set_notion_done_label(manager, notion_item)
+
+                else:
+                    # add item
+                    todoist_item = taskManager.from_todoist(manager, manager.api.items.get_by_id(item_id))
+                    print(f'Adding item "{todoist_item.content}":', end="")
+                    new_notion_id = taskManager.to_notion(manager, todoist_item)
+                    todoist_item.notion_task_id = new_notion_id
+                    taskManager.add_todoist_note(manager, todoist_item, note="NotionID")
+
+        else:
+            print(f"Ignoring webhook of type `{event_data['event_name']}`.")
+            return None
 
 class helper:
 
@@ -820,62 +879,7 @@ def check_notion_for_updates(full_sync=False):
 @zappa_task()
 def webhook_arrived(event_data: dict):
 
-    if event_data["event_name"] in ["item:added",
-                                    "item:updated",
-                                    "item:deleted",
-                                    "item:completed",
-                                    "item:uncompleted"]:
-        Manager.sync_todoist_api()
-        updates = Manager.new_sync
-        updated_items = updates["items"]
-        updated_item_ids = [item["id"] for item in updated_items]
-        is_deleted = False
-
-        for item_id in updated_item_ids:
-            print(f"current item id: {item_id}")
-            # check that the webhook wasn't just sent from us
-            # check if there is a notion task ID in notes:
-            for note in Manager.api.notes.all():
-                if note["item_id"] == item_id and "Synced from Notion" in note["content"]:
-                    print(f"Item {item_id} was just synced from notion. Skipping...")
-                    note.delete()
-                    Manager.commit_todoist_api()
-                    continue
-
-            # update each item in notion
-            notion_rows = Manager.tasks.collection.get_rows(search=str(item_id))
-            if notion_rows:
-                # update item
-                row = notion_rows[0]
-                notion_item = taskManager.from_notion(Manager, row)
-
-                try:
-                    todoist_item = taskManager.from_todoist(Manager, Manager.api.items.get_by_id(item_id))
-                except TypeError:  # Catch deleted items that don't show up
-                    todoist_item = notion_item
-                    is_deleted = True
-
-                if not is_deleted:
-                    # check for updates and sync them to notion
-                    print(f'Updating task "{todoist_item.content}":', end="")
-                    new_item, updates = taskManager.compare_two_tasks(Manager, todoist_item, notion_item)
-                    taskManager.update_notion_item(Manager, item=new_item, updates=updates)
-                else:
-                    # set to done
-                    notion_item.done = True
-                    labelManager.set_notion_done_label(Manager, notion_item)
-
-            else:
-                # add item
-                todoist_item = taskManager.from_todoist(Manager, Manager.api.items.get_by_id(item_id))
-                print(f'Adding item "{todoist_item.content}":', end="")
-                new_notion_id = taskManager.to_notion(Manager, todoist_item)
-                todoist_item.notion_task_id = new_notion_id
-                taskManager.add_todoist_note(Manager, todoist_item, note="NotionID")
-
-    else:
-        print(f"Ignoring webhook of type `{event_data['event_name']}`.")
-        return None
+    taskManager.webhook_arrived(manager=Manager, event_data=event_data)
 
 
 app = Flask(__name__)
