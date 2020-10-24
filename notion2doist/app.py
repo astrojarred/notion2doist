@@ -107,8 +107,9 @@ class syncManager:
         self.new_sync = None
         self.old_commit = None
         self.new_commit = None
-        self.last_notion_sync_time = helper.add_local_tz(datetime(2020, 1, 1, 0, 0, 0, 0))
-
+        self.last_notion_sync_time = helper.add_local_tz(
+            datetime.fromtimestamp(float(self.config["Last notion sync time"]))
+        )
         # taskManager.sync_notion_to_todoist(self, full_sync=True)
 
     def sync_todoist_api(self):
@@ -121,6 +122,10 @@ class syncManager:
 
     def update_notion_sync_time(self):
         self.last_notion_sync_time = helper.add_local_tz(datetime.now())
+
+        # export the sync time to the config table
+        time_row = self.settings.collection.get_rows(search="Last notion sync time")[0]
+        time_row.value = str(self.last_notion_sync_time.timestamp())
 
     def sync_notion_tasks(self):
         taskManager.sync_notion_to_todoist(self)
