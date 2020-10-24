@@ -470,6 +470,7 @@ class taskManager:
         if_is_first = True
 
         for (key, value1), value2 in zip(task1_dict.items(), task2_dict.values()):
+            # TODO: add line here that will sort label and label ID lists to not count order differences as a change
             if value1 != value2 and key not in ["source", "todoist_note_id"]:  # exclude the "source" and
                 updated_properties.append(key)  # and "todoist_note_id" columns
 
