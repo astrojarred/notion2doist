@@ -13,8 +13,6 @@ if 'SERVERTYPE' in os.environ and os.environ['SERVERTYPE'] == 'AWS Lambda':
     NOTION_SETTINGS = os.environ.get("NOTION_SETTINGS")
 
 from flask import Flask, request, Response, redirect
-
-
 from bidict import bidict
 from notion.client import NotionClient
 from notion.collection import NotionDate
@@ -879,7 +877,9 @@ def webhook_arrived(event_data: dict):
         print(f"Ignoring webhook of type `{event_data['event_name']}`.")
         return None
 
+
 app = Flask(__name__)
+
 
 @app.route("/webhook", methods=["POST"])
 def respond():
