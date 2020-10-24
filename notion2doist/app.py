@@ -510,6 +510,7 @@ class taskManager:
         # loop task by task
         # TODO: to eventually speed this up, we can filter by events changed within the last 24h, e.g.
         for row in manager.tasks.collection.get_rows():
+            print("\n\n\n---------------------------------")
             # refresh the row
             row.refresh()
 
@@ -525,13 +526,15 @@ class taskManager:
                 continue
 
             notion_task = taskManager.from_notion(manager, row)  # get the task from Notion
+            print("\n Notion task:", notion_task)
 
             # check config for whether or not the event should be allowed to sync
             if not (not manager.config["Sync completed tasks"] and notion_task.done):
                 todoist_item = manager.api.items.get_by_id(row.todoistID)
                 if not todoist_item:  # check if the task already exists
-                    print(f"Task: {row.title}: new!")
+                    print(f"Task: {row.title} is new!")
                     new_item_id, new_note_id = taskManager.to_todoist(manager, notion_task)  # send to todoist
+                    print(f"New item and note id: {new_item_id}, {new_note_id}")
                     row.todoistID = new_item_id  # add the todoist item ID back to the row in Notion
                     print(f"Synced new Notion task {row.title} to Todoist.")
                     new_project_count += 1
@@ -539,9 +542,11 @@ class taskManager:
                     # if it already has a todoistID, check for updates
                     print(f'Task: "{row.title}"', end="")
                     todoist_task = taskManager.from_todoist(manager, item=todoist_item)
+                    print("\n Todoist task:", todoist_task)
 
                     # merge tasks and sync changes to both notion and todoist
                     new_task, updates = taskManager.compare_two_tasks(manager, notion_task, todoist_task)
+                    print("\n Updates:", updates)
                     if len(updates) > 0:
                         taskManager.update_todoist_item(manager, new_task, updates)
                         taskManager.update_notion_item(manager, new_task, updates)
@@ -559,6 +564,7 @@ class taskManager:
         notion_item = manager.tasks.collection.get_rows(search=item.notion_task_id)[0]
 
         if "content" in updates:
+            print(f"Updating title from {notion_item.title} to {item.content}")
             notion_item.title = item.content
         if "due" in updates:
             # get due date
