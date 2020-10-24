@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='notion-to-doist',
-    version='0.01',
+    version='0.2.0',
     packages=['notion2doist'],
     url='',
     license='',

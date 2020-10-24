@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "notion-to-doist"
+version = "0.1.0"
+description = ""
+authors = ["Jarred Green <astrojarred@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+Flask = "^1.1.2"
+bidict = "^0.21.2"
+todoist-python = "^8.1.2"
+zappa = "^0.52.0"
+notion = {git = "https://github.com/jamalex/notion-py.git"}
+
+[tool.poetry.dev-dependencies]
+jupyter = "^1.0.0"
+jupyterlab = "^2.2.8"
+ipykernel = "^5.3.4"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
