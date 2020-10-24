@@ -722,7 +722,7 @@ test = ["nose", "coverage", "requests", "nose-warnings-filters", "nbval", "nose-
 
 [[package]]
 name = "notion"
-version = "0.0.25"
+version = "0.0.26"
 description = "Unofficial Python API client for Notion.so"
 category = "main"
 optional = false
@@ -736,6 +736,12 @@ dictdiffer = "*"
 python-slugify = "*"
 requests = "*"
 tzlocal = "*"
+
+[package.source]
+type = "git"
+url = "https://github.com/jamalex/notion-py.git"
+reference = "master"
+resolved_reference = "b7041ade477c1f59edab1b6fc025326d406dd92a"
 
 [[package]]
 name = "packaging"
@@ -1245,7 +1251,7 @@ testing = ["pytest (>=3.5,<3.7.3 || >3.7.3)", "pytest-checkdocs (>=1.2.3)", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6"
-content-hash = "6251ec8a80d32cfb7f91512e2ccd63ba8cc6432cfe5a435a40fd265403251878"
+content-hash = "64f7e940e02776747ce8edef4c857f5be860df02154d9d91c3c76161c63be620"
 
 [metadata.files]
 appnope = [
@@ -1545,10 +1551,7 @@ notebook = [
     {file = "notebook-6.1.4-py3-none-any.whl", hash = "sha256:07b6e8b8a61aa2f780fe9a97430470485bc71262bc5cae8521f1441b910d2c88"},
     {file = "notebook-6.1.4.tar.gz", hash = "sha256:687d01f963ea20360c0b904ee7a37c3d8cda553858c8d6e33fd0afd13e89de32"},
 ]
-notion = [
-    {file = "notion-0.0.25-py3-none-any.whl", hash = "sha256:d6ad33fab45fbf31bfe5186a3b0dd50dc88893a252f4ba45f4ddf6a8a467237f"},
-    {file = "notion-0.0.25.tar.gz", hash = "sha256:96b1e5ed495b6b0d6ace21fbf49c409d3c46be710d08cecaee12cb364b8d0049"},
-]
+notion = []
 packaging = [
     {file = "packaging-20.4-py2.py3-none-any.whl", hash = "sha256:998416ba6962ae7fbd6596850b80e17859a5753ba17c32284f67bfff33784181"},
     {file = "packaging-20.4.tar.gz", hash = "sha256:4357f74f47b9c12db93624a82154e9b120fa8293699949152b22065d556079f8"},
