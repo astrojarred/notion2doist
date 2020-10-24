@@ -725,7 +725,7 @@ class taskManager:
         # check if due date data available
         try:
             due = NotionDate(start=datetime.strptime(item.due, "%Y-%m-%d").date())
-        except AttributeError:
+        except (AttributeError, TypeError):
             due = None
 
         # get labels
