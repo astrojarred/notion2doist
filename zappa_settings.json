@@ -6,6 +6,7 @@
         "project_name": "notion-to-doist",
         "runtime": "python3.6",
         "s3_bucket": "zappa-pd54z1nvx",
-        "timeout_seconds": 300, // Maximum lifespan for the Lambda function (default 30, max 900.)
+        "timeout_seconds": 500, // Maximum lifespan for the Lambda function (default 30, max 900.)
+        "log_level": "INFO"
     }
 }

@@ -1,0 +1,595 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="BRANCH:manual-sync" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </select>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="7f2871f5-53c1-4484-b402-115335718284" name="Default Changelist" comment="Disable debug mode">
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/development.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/development.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notion2doist/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/notion2doist/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/zappa_settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/zappa_settings.json" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Setup Script" />
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="FlaskConsoleOptions" custom-start-script="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))">
+    <envs>
+      <env key="FLASK_APP" value="app" />
+    </envs>
+    <option name="myCustomStartScript" value="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))" />
+    <option name="myEnvs">
+      <map>
+        <entry key="FLASK_APP" value="app" />
+      </map>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="lambda-speedup-1" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="ROOT_SYNC" value="DONT_SYNC" />
+  </component>
+  <component name="JupyterTrust" id="3f1bf8f3-d52b-4e72-b323-dd305c9b6c36" />
+  <component name="ProjectId" id="1iFNUZhjJOLwDNvz3WXQtTyONok" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="false" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="Git.Branch.Popup.ShowAllRemotes" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="true" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="configurable.group.project" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/notebooks" />
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/notion2doist" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="notion-to-doist" type="PythonConfigurationType" factoryName="Python">
+      <module name="notion-to-doist" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/notion2doist/app.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="7f2871f5-53c1-4484-b402-115335718284" name="Default Changelist" comment="" />
+      <created>1601499397108</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1601499397108</updated>
+      <workItem from="1601499398705" duration="19011000" />
+      <workItem from="1601660478532" duration="3947000" />
+      <workItem from="1601747945602" duration="12333000" />
+      <workItem from="1601915281501" duration="72404000" />
+      <workItem from="1602949307961" duration="4169000" />
+      <workItem from="1603213311400" duration="2891000" />
+      <workItem from="1603229901689" duration="440000" />
+      <workItem from="1603230404282" duration="107000" />
+      <workItem from="1603230515182" duration="593000" />
+      <workItem from="1603231314597" duration="8946000" />
+      <workItem from="1603376963774" duration="6781000" />
+      <workItem from="1603540749703" duration="2029000" />
+      <workItem from="1603543766364" duration="3736000" />
+      <workItem from="1603706682570" duration="310000" />
+      <workItem from="1603736710686" duration="4089000" />
+      <workItem from="1610112642583" duration="603000" />
+      <workItem from="1610194556950" duration="311000" />
+    </task>
+    <task id="LOCAL-00059" summary="Move development notebooks.">
+      <created>1602526264120</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1602526264121</updated>
+    </task>
+    <task id="LOCAL-00060" summary="Add setup.py.">
+      <created>1602526387248</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1602526387248</updated>
+    </task>
+    <task id="LOCAL-00061" summary="Add Heroku Procfile.">
+      <created>1602526733747</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1602526733748</updated>
+    </task>
+    <task id="LOCAL-00062" summary="Add Heroku runtime.txt.">
+      <created>1602526880952</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1602526880952</updated>
+    </task>
+    <task id="LOCAL-00063" summary="Update versioning.">
+      <created>1602527056298</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1602527056298</updated>
+    </task>
+    <task id="LOCAL-00064" summary="Update app.">
+      <created>1602527593544</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1602527593544</updated>
+    </task>
+    <task id="LOCAL-00065" summary="Update Procfile.">
+      <created>1602538833732</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1602538833732</updated>
+    </task>
+    <task id="LOCAL-00066" summary="Remove single slash reroute that caused crashing.">
+      <created>1602539272893</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1602539272893</updated>
+    </task>
+    <task id="LOCAL-00067" summary="Add catchall route to todoist site.">
+      <created>1602539487355</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1602539487355</updated>
+    </task>
+    <task id="LOCAL-00068" summary="Add a full notion -&gt; todoist sync on startup.">
+      <created>1602540046898</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1602540046898</updated>
+    </task>
+    <task id="LOCAL-00069" summary="Disable debug mode">
+      <created>1602565109343</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1602565109344</updated>
+    </task>
+    <task id="LOCAL-00070" summary="Fix bug where project changes in notion would not sync.">
+      <created>1602596223618</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1602596223618</updated>
+    </task>
+    <task id="LOCAL-00071" summary="Delete old sync timestamp notes when updating todoist item.">
+      <created>1602596247153</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1602596247153</updated>
+    </task>
+    <task id="LOCAL-00072" summary="Add new item if a) no todoist id available or b) item with id not found in todoist.">
+      <created>1602671819946</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1602671819947</updated>
+    </task>
+    <task id="LOCAL-00073" summary="Add new item if a) no todoist id available or b) item with id not found in todoist.">
+      <created>1602672148666</created>
+      <option name="number" value="00073" />
+      <option name="presentableId" value="LOCAL-00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1602672148666</updated>
+    </task>
+    <task id="LOCAL-00074" summary="Move first notion sync to before __main__.">
+      <created>1602680437015</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1602680437015</updated>
+    </task>
+    <task id="LOCAL-00075" summary="Turn on debug mode but turn off reloader.">
+      <created>1602680462452</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1602680462452</updated>
+    </task>
+    <task id="LOCAL-00076" summary="Add rq worker.py.">
+      <created>1602696429011</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1602696429011</updated>
+    </task>
+    <task id="LOCAL-00077" summary="Add back atexit for scheduler.">
+      <created>1602696960200</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1602696960200</updated>
+    </task>
+    <task id="LOCAL-00078" summary="Move webhook manager to an APscheduler job.">
+      <created>1602698331268</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1602698331268</updated>
+    </task>
+    <task id="LOCAL-00079" summary="Move webhook manager to an APscheduler job.">
+      <created>1602698445336</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1602698445336</updated>
+    </task>
+    <task id="LOCAL-00080" summary="Start adding new taskManager class.">
+      <created>1602949538332</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1602949538332</updated>
+    </task>
+    <task id="LOCAL-00081" summary="Update setup.py to v0.2.">
+      <created>1603226652572</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1603226652573</updated>
+    </task>
+    <task id="LOCAL-00082" summary="Remove old files">
+      <created>1603226670740</created>
+      <option name="number" value="00082" />
+      <option name="presentableId" value="LOCAL-00082" />
+      <option name="project" value="LOCAL" />
+      <updated>1603226670740</updated>
+    </task>
+    <task id="LOCAL-00083" summary="Remove old files.">
+      <created>1603226783845</created>
+      <option name="number" value="00083" />
+      <option name="presentableId" value="LOCAL-00083" />
+      <option name="project" value="LOCAL" />
+      <updated>1603226783845</updated>
+    </task>
+    <task id="LOCAL-00084" summary="Add poetry files.">
+      <created>1603226802346</created>
+      <option name="number" value="00084" />
+      <option name="presentableId" value="LOCAL-00084" />
+      <option name="project" value="LOCAL" />
+      <updated>1603226802346</updated>
+    </task>
+    <task id="LOCAL-00085" summary="Remove initial full notion -&gt; todoist sync upon initialization of the manager.">
+      <created>1603226852302</created>
+      <option name="number" value="00085" />
+      <option name="presentableId" value="LOCAL-00085" />
+      <option name="project" value="LOCAL" />
+      <updated>1603226852303</updated>
+    </task>
+    <task id="LOCAL-00086" summary="Make notion sync a flask action.">
+      <created>1603226889443</created>
+      <option name="number" value="00086" />
+      <option name="presentableId" value="LOCAL-00086" />
+      <option name="project" value="LOCAL" />
+      <updated>1603226889443</updated>
+    </task>
+    <task id="LOCAL-00087" summary="Remove scheduler from actions.">
+      <created>1603226918501</created>
+      <option name="number" value="00087" />
+      <option name="presentableId" value="LOCAL-00087" />
+      <option name="project" value="LOCAL" />
+      <updated>1603226918501</updated>
+    </task>
+    <task id="LOCAL-00088" summary="Add pycharm config files.">
+      <created>1603227029606</created>
+      <option name="number" value="00088" />
+      <option name="presentableId" value="LOCAL-00088" />
+      <option name="project" value="LOCAL" />
+      <updated>1603227029606</updated>
+    </task>
+    <task id="LOCAL-00089" summary="Update development notebook.">
+      <created>1603227062214</created>
+      <option name="number" value="00089" />
+      <option name="presentableId" value="LOCAL-00089" />
+      <option name="project" value="LOCAL" />
+      <updated>1603227062214</updated>
+    </task>
+    <task id="LOCAL-00090" summary="Update poetry files.">
+      <created>1603230371478</created>
+      <option name="number" value="00090" />
+      <option name="presentableId" value="LOCAL-00090" />
+      <option name="project" value="LOCAL" />
+      <updated>1603230371478</updated>
+    </task>
+    <task id="LOCAL-00091" summary="Move all functions into app.py and prepare it for aws lambda.">
+      <created>1603463267931</created>
+      <option name="number" value="00091" />
+      <option name="presentableId" value="LOCAL-00091" />
+      <option name="project" value="LOCAL" />
+      <updated>1603463267932</updated>
+    </task>
+    <task id="LOCAL-00092" summary="Update development notebooks.">
+      <created>1603463283936</created>
+      <option name="number" value="00092" />
+      <option name="presentableId" value="LOCAL-00092" />
+      <option name="project" value="LOCAL" />
+      <updated>1603463283937</updated>
+    </task>
+    <task id="LOCAL-00093" summary="Update poetry environment.">
+      <created>1603463299352</created>
+      <option name="number" value="00093" />
+      <option name="presentableId" value="LOCAL-00093" />
+      <option name="project" value="LOCAL" />
+      <updated>1603463299352</updated>
+    </task>
+    <task id="LOCAL-00094" summary="Update pycharm config files.">
+      <created>1603463314780</created>
+      <option name="number" value="00094" />
+      <option name="presentableId" value="LOCAL-00094" />
+      <option name="project" value="LOCAL" />
+      <updated>1603463314781</updated>
+    </task>
+    <task id="LOCAL-00095" summary="Add zappa config file.">
+      <created>1603463352284</created>
+      <option name="number" value="00095" />
+      <option name="presentableId" value="LOCAL-00095" />
+      <option name="project" value="LOCAL" />
+      <updated>1603463352284</updated>
+    </task>
+    <task id="LOCAL-00096" summary="Update env with dev dependencies.">
+      <created>1603465357794</created>
+      <option name="number" value="00096" />
+      <option name="presentableId" value="LOCAL-00096" />
+      <option name="project" value="LOCAL" />
+      <updated>1603465357794</updated>
+    </task>
+    <task id="LOCAL-00097" summary="Update development notebook.">
+      <created>1603465366904</created>
+      <option name="number" value="00097" />
+      <option name="presentableId" value="LOCAL-00097" />
+      <option name="project" value="LOCAL" />
+      <updated>1603465366904</updated>
+    </task>
+    <task id="LOCAL-00098" summary="Update app.py to work in jupyter.">
+      <created>1603465379714</created>
+      <option name="number" value="00098" />
+      <option name="presentableId" value="LOCAL-00098" />
+      <option name="project" value="LOCAL" />
+      <updated>1603465379714</updated>
+    </task>
+    <task id="LOCAL-00099" summary="Fix formatting.">
+      <created>1603541101161</created>
+      <option name="number" value="00099" />
+      <option name="presentableId" value="LOCAL-00099" />
+      <option name="project" value="LOCAL" />
+      <updated>1603541101162</updated>
+    </task>
+    <task id="LOCAL-00100" summary="Rearrange functions.">
+      <created>1603543459912</created>
+      <option name="number" value="00100" />
+      <option name="presentableId" value="LOCAL-00100" />
+      <option name="project" value="LOCAL" />
+      <updated>1603543459912</updated>
+    </task>
+    <task id="LOCAL-00101" summary="Add more verbosity for debugging.">
+      <created>1603543539134</created>
+      <option name="number" value="00101" />
+      <option name="presentableId" value="LOCAL-00101" />
+      <option name="project" value="LOCAL" />
+      <updated>1603543539134</updated>
+    </task>
+    <task id="LOCAL-00102" summary="Update development notebook.">
+      <created>1603543551075</created>
+      <option name="number" value="00102" />
+      <option name="presentableId" value="LOCAL-00102" />
+      <option name="project" value="LOCAL" />
+      <updated>1603543551075</updated>
+    </task>
+    <task id="LOCAL-00103" summary="Update how app keeps time.">
+      <created>1603552539867</created>
+      <option name="number" value="00103" />
+      <option name="presentableId" value="LOCAL-00103" />
+      <option name="project" value="LOCAL" />
+      <updated>1603552539867</updated>
+    </task>
+    <task id="LOCAL-00104" summary="Add todos.">
+      <created>1603552547844</created>
+      <option name="number" value="00104" />
+      <option name="presentableId" value="LOCAL-00104" />
+      <option name="project" value="LOCAL" />
+      <updated>1603552547844</updated>
+    </task>
+    <task id="LOCAL-00105" summary="Update poetry environment.">
+      <created>1603552555454</created>
+      <option name="number" value="00105" />
+      <option name="presentableId" value="LOCAL-00105" />
+      <option name="project" value="LOCAL" />
+      <updated>1603552555454</updated>
+    </task>
+    <task id="LOCAL-00106" summary="Update development notebook.">
+      <created>1603552590840</created>
+      <option name="number" value="00106" />
+      <option name="presentableId" value="LOCAL-00106" />
+      <option name="project" value="LOCAL" />
+      <updated>1603552590840</updated>
+    </task>
+    <task id="LOCAL-00107" summary="Fix bug where lack of due date in todoist caused a sync error.">
+      <created>1603552611685</created>
+      <option name="number" value="00107" />
+      <option name="presentableId" value="LOCAL-00107" />
+      <option name="project" value="LOCAL" />
+      <updated>1603552611685</updated>
+    </task>
+    <option name="localTasksCounter" value="108" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="manual-sync" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Move webhook manager to an APscheduler job." />
+    <MESSAGE value="Start adding new taskManager class." />
+    <MESSAGE value="Update setup.py to v0.2." />
+    <MESSAGE value="Remove old files" />
+    <MESSAGE value="Remove old files." />
+    <MESSAGE value="Add poetry files." />
+    <MESSAGE value="Remove initial full notion -&gt; todoist sync upon initialization of the manager." />
+    <MESSAGE value="Make notion sync a flask action." />
+    <MESSAGE value="Remove scheduler from actions." />
+    <MESSAGE value="Add pycharm config files." />
+    <MESSAGE value="Update poetry files." />
+    <MESSAGE value="Move all functions into app.py and prepare it for aws lambda." />
+    <MESSAGE value="Update development notebooks." />
+    <MESSAGE value="Update pycharm config files." />
+    <MESSAGE value="Add zappa config file." />
+    <MESSAGE value="Update env with dev dependencies." />
+    <MESSAGE value="Update app.py to work in jupyter." />
+    <MESSAGE value="Fix formatting." />
+    <MESSAGE value="Rearrange functions." />
+    <MESSAGE value="Add more verbosity for debugging." />
+    <MESSAGE value="Update how app keeps time." />
+    <MESSAGE value="Add todos." />
+    <MESSAGE value="Update poetry environment." />
+    <MESSAGE value="Update development notebook." />
+    <MESSAGE value="Fix bug where lack of due date in todoist caused a sync error." />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix bug where lack of due date in todoist caused a sync error." />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="317" y="81" key="#Inspections" timestamp="1601500782472">
+      <screen x="0" y="23" width="1366" height="745" />
+    </state>
+    <state x="317" y="81" key="#Inspections/0.23.1366.745@0.23.1366.745" timestamp="1601500782472" />
+    <state x="414" y="231" key="#Notifications" timestamp="1603230854232">
+      <screen x="0" y="23" width="1366" height="745" />
+    </state>
+    <state x="414" y="231" key="#Notifications/0.23.1366.745@0.23.1366.745" timestamp="1603230854232" />
+    <state x="283" y="43" key="#Plugins" timestamp="1603231339986">
+      <screen x="0" y="23" width="1366" height="745" />
+    </state>
+    <state x="283" y="43" key="#Plugins/0.23.1366.745@0.23.1366.745" timestamp="1603231339986" />
+    <state x="2075" y="229" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1602526703757">
+      <screen x="1366" y="-99" width="1920" height="1057" />
+    </state>
+    <state x="2075" y="229" key="#com.intellij.fileTypes.FileTypeChooser/1366.-99.1920.1057/0.23.1366.745@1366.-99.1920.1057" timestamp="1602526703757" />
+    <state x="1466" y="1" width="1720" height="857" key="DiffContextDialog" timestamp="1603544248364">
+      <screen x="1366" y="-99" width="1920" height="1057" />
+    </state>
+    <state x="1466" y="1" width="1720" height="857" key="DiffContextDialog/1366.-99.1920.1057/0.23.1366.745@1366.-99.1920.1057" timestamp="1603544248364" />
+    <state x="471" y="157" key="FileChooserDialogImpl" timestamp="1603234779515">
+      <screen x="0" y="23" width="1366" height="745" />
+    </state>
+    <state x="471" y="157" key="FileChooserDialogImpl/0.23.1366.745@0.23.1366.745" timestamp="1603234779515" />
+    <state x="104" y="34" key="SettingsEditor" timestamp="1603234754889">
+      <screen x="0" y="23" width="1366" height="745" />
+    </state>
+    <state x="104" y="34" key="SettingsEditor/0.23.1366.745@0.23.1366.745" timestamp="1603234754889" />
+    <state x="1466" y="1" width="1720" height="857" key="ShowDiffWithBranchDialog" timestamp="1603544248364">
+      <screen x="1366" y="-99" width="1920" height="1057" />
+    </state>
+    <state x="1466" y="1" width="1720" height="857" key="ShowDiffWithBranchDialog/1366.-99.1920.1057/0.23.1366.745@1366.-99.1920.1057" timestamp="1603544248364" />
+    <state x="1662" y="118" key="Vcs.Push.Dialog.v2" timestamp="1603792994737">
+      <screen x="1366" y="-99" width="1920" height="1057" />
+    </state>
+    <state x="398" y="209" key="Vcs.Push.Dialog.v2/0.23.1366.745@0.23.1366.745" timestamp="1603230373498" />
+    <state x="1662" y="118" key="Vcs.Push.Dialog.v2/1366.-99.1920.1057/0.23.1366.745@1366.-99.1920.1057" timestamp="1603792994737" />
+    <state x="463" y="54" key="com.intellij.openapi.vcs.changes.SpecificFilesViewDialog" timestamp="1603226678963">
+      <screen x="0" y="23" width="1366" height="745" />
+    </state>
+    <state x="463" y="54" key="com.intellij.openapi.vcs.changes.SpecificFilesViewDialog/0.23.1366.745@0.23.1366.745" timestamp="1603226678963" />
+    <state x="2131" y="346" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1602165503303">
+      <screen x="1366" y="-99" width="1920" height="1057" />
+    </state>
+    <state x="2131" y="346" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/1366.-99.1920.1057/0.23.1366.745@1366.-99.1920.1057" timestamp="1602165503303" />
+    <state x="2072" y="67" key="git4idea.branch.GitSmartOperationDialog" timestamp="1603543433600">
+      <screen x="1366" y="-99" width="1920" height="1057" />
+    </state>
+    <state x="2072" y="67" key="git4idea.branch.GitSmartOperationDialog/1366.-99.1920.1057/0.23.1366.745@1366.-99.1920.1057" timestamp="1603543433600" />
+    <state x="2142" y="221" key="refactoring.ChangeSignatureDialog" timestamp="1601596438843">
+      <screen x="1366" y="-99" width="1920" height="1057" />
+    </state>
+    <state x="2142" y="221" key="refactoring.ChangeSignatureDialog/1366.-99.1920.1057/0.23.1366.745@1366.-99.1920.1057" timestamp="1601596438843" />
+  </component>
+</project>

@@ -329,6 +329,9 @@ class projectManager:
     @staticmethod
     def get_todoist_bidict(manager):
 
+        for project in manager.api.projects.all():
+            print(project["id"], "  ", project["name"])
+
         project_bidict = bidict({})
         for project in manager.api.projects.all():
             project_bidict[project["id"]] = project["name"]
@@ -516,7 +519,6 @@ class taskManager:
         # loop task by task
         # TODO: to eventually speed this up, we can filter by events changed within the last 24h, e.g.
         for row in manager.tasks.collection.get_rows():
-            print("\n\n\n---------------------------------")
             # refresh the row
             row.refresh()
 
@@ -532,7 +534,6 @@ class taskManager:
                 continue
 
             notion_task = taskManager.from_notion(manager, row)  # get the task from Notion
-            print("\n Notion task:", notion_task)
 
             # check config for whether or not the event should be allowed to sync
             if not (not manager.config["Sync completed tasks"] and notion_task.done):
@@ -548,11 +549,9 @@ class taskManager:
                     # if it already has a todoistID, check for updates
                     print(f'Task: "{row.title}"', end="")
                     todoist_task = taskManager.from_todoist(manager, item=todoist_item)
-                    print("\n Todoist task:", todoist_task)
 
                     # merge tasks and sync changes to both notion and todoist
                     new_task, updates = taskManager.compare_two_tasks(manager, notion_task, todoist_task)
-                    print("\n Updates:", updates)
                     if len(updates) > 0:
                         taskManager.update_todoist_item(manager, new_task, updates)
                         taskManager.update_notion_item(manager, new_task, updates)
@@ -563,6 +562,21 @@ class taskManager:
         # Update last notion sync time in the manager
         manager.update_notion_sync_time()
         print(f"Added {new_project_count} and updated {updated_project_count} tasks.")
+
+    @staticmethod
+    def async_notion_to_todoist(manager: syncManager, full_sync=False):
+
+        # TODO: batch updates together before committing
+        print("Asyncing notion tasks to todoist...")
+
+        # loop task by task
+        # TODO: to eventually speed this up, we can filter by events changed within the last 24h, e.g.
+        for row in manager.tasks.collection.get_rows():
+            sync_notion_row(row, full_sync=full_sync)
+
+        # Update last notion sync time in the manager
+        manager.update_notion_sync_time()
+        print(f"Done updating asyncronously")
 
     @staticmethod
     def update_notion_item(manager: syncManager, item: task, updates: list):
@@ -853,6 +867,7 @@ class taskManager:
             print(f"Ignoring webhook of type `{event_data['event_name']}`.")
             return None
 
+
 class helper:
 
     @staticmethod
@@ -882,11 +897,56 @@ def compute_hmac(body):
 
 @zappa_task()
 def check_notion_for_updates(full_sync=False):
-    print("\nChecking Notion for updates...")
+    print(f"\nChecking Notion for updates... full sync is {full_sync}.")
     labelManager.sync_labels_to_todoist(Manager)
     projectManager.sync_projects(Manager)
     taskManager.sync_notion_to_todoist(Manager, full_sync=full_sync)
 
+
+@zappa_task()
+def sync_notion_row(row, full_sync=False):
+
+    # refresh the row
+    row.refresh()
+    print(f"Syncing row {row.title} asynchronously")
+
+    if not row.notionID:  # add the Notion ID to the row if it is not there already
+        print(f"Adding notion ID for task: {row.title}")
+        row.notionID = row.id
+
+    # only update the task if its `last edited` timestamp if after the last sync with Notion
+    if not helper.utc_to_local(row.last_edited) >= Manager.last_notion_sync_time and not full_sync:
+        # print(f"{row.title}: Updated: {helper.utc_to_local(row.last_edited)}")
+        # print(f"Updated {row.title} too long ago")
+        print(f"Skipping row {row.title}!")
+        return
+
+    notion_task = taskManager.from_notion(Manager, row)  # get the task from Notion
+
+    # check config for whether or not the event should be allowed to sync
+    if not (not Manager.config["Sync completed tasks"] and notion_task.done):
+        todoist_item = Manager.api.items.get_by_id(row.todoistID)
+        if not todoist_item:  # check if the task already exists
+            print(f"Task: {row.title} is new!")
+            new_item_id, new_note_id = taskManager.to_todoist(Manager, notion_task)  # send to todoist
+            print(f"New item and note id: {new_item_id}, {new_note_id}")
+            row.todoistID = new_item_id  # add the todoist item ID back to the row in Notion
+            print(f"Synced new Notion task {row.title} to Todoist.")
+        else:
+            # if it already has a todoistID, check for updates
+            print(f'Task: "{row.title}"', end="")
+            todoist_task = taskManager.from_todoist(Manager, item=todoist_item)
+
+            # merge tasks and sync changes to both notion and todoist
+            new_task, updates = taskManager.compare_two_tasks(Manager, notion_task, todoist_task)
+            print("\n Updates:", updates)
+            if len(updates) > 0:
+                taskManager.update_todoist_item(Manager, new_task, updates)
+                taskManager.update_notion_item(Manager, new_task, updates)
+            else:
+                print(": no change")
+
+    print(f"Done syncing row {row.title} asynchronously")
 
 @zappa_task()
 def webhook_arrived(event_data: dict):
