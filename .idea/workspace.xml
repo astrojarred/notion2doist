@@ -13,23 +13,23 @@
       <path>
         <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
         <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:astrojarred" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
         <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
       </path>
     </expand>
-    <select>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="BRANCH:manual-sync" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
-    </select>
+    <select />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7f2871f5-53c1-4484-b402-115335718284" name="Default Changelist" comment="Disable debug mode">
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/.ipynb_checkpoints/development-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/.ipynb_checkpoints/development-checkpoint.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/notebooks/development.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/development.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/notion2doist/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/notion2doist/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/zappa_settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/zappa_settings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/poetry.lock" beforeDir="false" afterPath="$PROJECT_DIR$/poetry.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,7 +58,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="lambda-speedup-1" />
+        <entry key="$PROJECT_DIR$" value="mongo" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -135,6 +135,7 @@
       <workItem from="1603736710686" duration="4089000" />
       <workItem from="1610112642583" duration="603000" />
       <workItem from="1610194556950" duration="311000" />
+      <workItem from="1611516857636" duration="4871000" />
     </task>
     <task id="LOCAL-00059" summary="Move development notebooks.">
       <created>1602526264120</created>
