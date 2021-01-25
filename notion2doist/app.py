@@ -92,9 +92,11 @@ class syncManager:
 
         # extract and parse settings
         self.config = {}
+        self.priorities = {}
         self.use_groups = False
         self.sync_completed_tasks = False
         self.sync_config()
+        self.parse_custom_priorities()
 
         self.tasks = self.client.get_collection_view(
             "https://www.notion.so/" + self.config["Link to task database"]
@@ -142,6 +144,20 @@ class syncManager:
             column_dict[key] = value
         self.config["Input label string"] = self.config['Label column name']
         self.config['Label column name'] = column_dict
+
+    def parse_custom_priorities(self):
+
+        options = {}
+
+        priorities = self.config['Cutsom Priority Names'].split("\n")
+
+        for p in priorities:
+            p_split = p.split(": ")
+            priority, custom_label = p_split[0], p_split[1]
+
+            options[priority] = custom_label
+
+        self.priorities = options
 
     def sync_config(self):
         self.config = {row.title: row.value for row in self.settings.collection.get_rows()}  # extract settings
