@@ -55,7 +55,7 @@ class task:
         self.todoist_note_id = todoist_note_id
 
     def __repr__(self):
-        return f"Task: {self.content}\n {json.dumps(self.__dict__, indent=4)}"
+        return f"Task: {self.content}\n Task({json.dumps(self.__dict__, indent=4)})"
 
     def __eq__(self, other):
         return self.generate_eq_dict() == other.generate_eq_dict()
