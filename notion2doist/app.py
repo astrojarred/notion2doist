@@ -104,19 +104,27 @@ class syncManager:
         self.projects = self.client.get_collection_view(
             "https://www.notion.so/" + self.config["Link to project database"]
         )
-        self.labels = self.client.get_collection_view(
-            "https://www.notion.so/" + self.config["Link to label database"]
-        )
+
+        try:
+            self.labels = self.client.get_collection_view(
+                "https://www.notion.so/" + self.config["Link to label database"]
+            )
+        except KeyError:
+            print("No label database provided.")
 
         # initialize todoist api jsons
         self.old_sync = None
         self.new_sync = None
         self.old_commit = None
         self.new_commit = None
-        self.last_notion_sync_time = helper.add_local_tz(
-            datetime.fromtimestamp(float(self.config["Last notion sync time"]))
-        )
-        # taskManager.sync_notion_to_todoist(self, full_sync=True)
+
+        try:
+            self.last_notion_sync_time = helper.add_local_tz(
+                datetime.fromtimestamp(float(self.config["Last notion sync time"]))
+            )
+            # taskManager.sync_notion_to_todoist(self, full_sync=True)
+        except KeyError:
+            print("Not tracking sync times.")
 
     def sync_todoist_api(self):
         self.old_sync = self.new_sync
@@ -161,8 +169,16 @@ class syncManager:
 
     def sync_config(self):
         self.config = {row.title: row.value for row in self.settings.collection.get_rows()}  # extract settings
-        self._parse_label_columns()
-        self.use_groups = True if self.config["Use groups"].lower() in ["true", "yes", "y", "t"] else False
+        try:
+            self._parse_label_columns()
+        except KeyError:
+            print("No label database.")
+
+        try:
+            self.use_groups = True if self.config["Use groups"].lower() in ["true", "yes", "y", "t"] else False
+        except KeyError:
+            print("No use groups option.")
+
         self.sync_completed_tasks = True if self.config["Sync completed tasks"].lower() in \
                                             ["true", "yes", "y", "t"] else False
         self.config['Sync completed tasks'] = self.sync_completed_tasks
