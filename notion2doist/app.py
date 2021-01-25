@@ -718,6 +718,8 @@ class taskManager:
             content=item["content"],
             done=is_done,
             due=due,
+            priority=item["priority"],
+            parent_id=item["parent_id"],
             label_ids=item["labels"],
             label_names=[manager.api.labels.get_by_id(label)['name'] for label in item['labels']],
             project_id=todoist_project_id,
