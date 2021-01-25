@@ -29,6 +29,8 @@ class task:
                  content=None,
                  done=None,
                  due=None,
+                 priority=None,
+                 parent_id=None,
                  label_ids=None,
                  label_names=None,
                  project_id=None,
@@ -42,6 +44,8 @@ class task:
         self.content = content
         self.done = done
         self.due = due
+        self.priority = priority
+        self.parent_id = parent_id
         self.label_ids = label_ids
         self.label_names = label_names
         self.project_id = project_id
